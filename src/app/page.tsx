@@ -1,17 +1,15 @@
-export default function Home() {
+import { getSession } from "@auth0/nextjs-auth0";
+import { redirect } from "next/navigation";
+export default async function Home() {
+  const session = await getSession();
+  if (session) redirect("/dashboard");
   return (
     <>
       <div>
-        <div className="w-screen h-screen flex flex-col items-center justify-center">
-          <h1 className="text-6xl">Welcome to Lyrical</h1>
-          <div className="mt-8">
-            <a
-              href="/api/auth/login?returnTo=/dashboard"
-              className="inline-flex transition-all px-4 py-2rounded-md hover:opacity-70"
-            >
-              Get Started
-            </a>
-          </div>
+        <div className="w-screen h-[calc(100vh - 60px)]">
+          <h1 className="text-center text-6xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:whitespace-nowrap">
+            Welcome to Lyrical
+          </h1>
         </div>
       </div>
     </>
