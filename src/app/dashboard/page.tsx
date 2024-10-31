@@ -5,9 +5,5 @@ export default async function DashBoard() {
   if (!session) {
     redirect("/api/auth/login?returnTo=/registration");
   }
-  return (
-    <div>
-      <h1>ダッシュボード</h1>
-    </div>
-  );
+  return <div></div>;
 }

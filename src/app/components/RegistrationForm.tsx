@@ -3,6 +3,24 @@
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface IFormInputs {
   name: string;
@@ -17,19 +35,12 @@ export default function RegistrationForm() {
     message: string;
   }>({ type: null, message: "" });
 
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-    reset,
-  } = useForm<IFormInputs>();
+  const form = useForm<IFormInputs>();
 
   const onSubmit = async (data: IFormInputs) => {
-    // 送信データをログ出力
     console.log("Sending data:", data);
-
     const body = JSON.stringify(data);
-    console.log("Stringified body:", body); // 変換後のJSONを確認
+    console.log("Stringified body:", body);
 
     try {
       const response = await fetch("/api/database/register", {
@@ -40,7 +51,6 @@ export default function RegistrationForm() {
         body,
       });
 
-      // レスポンスの詳細をログ出力
       console.log("Response status:", response.status);
       const responseData = await response.json();
       console.log("Response data:", responseData);
@@ -53,7 +63,7 @@ export default function RegistrationForm() {
         type: "success",
         message: "登録が完了しました！",
       });
-      reset();
+      form.reset();
       setTimeout(() => {
         router.push("/dashboard");
       }, 1000);
@@ -68,83 +78,84 @@ export default function RegistrationForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {submitStatus.message && (
-        <div
-          className={`p-4 rounded ${
-            submitStatus.type === "success"
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {submitStatus.message}
-        </div>
-      )}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {submitStatus.message && (
+          <Alert
+            variant={
+              submitStatus.type === "success" ? "default" : "destructive"
+            }
+          >
+            <AlertDescription>{submitStatus.message}</AlertDescription>
+          </Alert>
+        )}
 
-      <div>
-        <input
-          {...register("name", { required: true })}
-          aria-invalid={errors.name ? "true" : "false"}
-          className="w-full p-2 border rounded"
-          placeholder="名前"
+        <FormField
+          control={form.control}
+          name="name"
+          rules={{ required: "名前は必須です" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>名前</FormLabel>
+              <FormControl>
+                <Input placeholder="名前を入力" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.name?.type === "required" && (
-          <p role="alert" className="text-red-500">
-            名前は必須です
-          </p>
-        )}
-      </div>
-      <div>
-        <select
-          {...register("gender", { required: "性別を選択してください" })}
-          aria-invalid={errors.gender ? "true" : "false"}
-          className="w-full p-2 border rounded"
-          defaultValue=""
-        >
-          <option value="" disabled>
-            性別を選択
-          </option>
-          <option value="male">男性</option>
-          <option value="female">女性</option>
-          <option value="other">その他</option>
-          <option value="prefer_not_to_say">回答しない</option>
-        </select>
-        {errors.gender && (
-          <p role="alert" className="text-red-500">
-            {errors.gender?.message}
-          </p>
-        )}
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          生年月日
-        </label>
-        <input
-          {...register("birthdate", {
+        <FormField
+          control={form.control}
+          name="gender"
+          rules={{ required: "性別を選択してください" }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>性別</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="性別を選択" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="male">男性</SelectItem>
+                  <SelectItem value="female">女性</SelectItem>
+                  <SelectItem value="other">その他</SelectItem>
+                  <SelectItem value="prefer_not_to_say">回答しない</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="birthdate"
+          rules={{
             required: "生年月日は必須です",
             validate: (value) => {
               const date = new Date(value);
               const now = new Date();
               return date <= now || "未来の日付は選択できません";
             },
-          })}
-          type="date"
-          className="w-full p-2 border rounded"
-          aria-invalid={errors.birthdate ? "true" : "false"}
+          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>生年月日</FormLabel>
+              <FormControl>
+                <Input type="date" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.birthdate && (
-          <p role="alert" className="text-red-500">
-            {errors.birthdate?.message}
-          </p>
-        )}
-      </div>
 
-      <input
-        type="submit"
-        className="w-full p-2 text-white bg-blue-500 rounded hover:bg-blue-600 cursor-pointer"
-        value="登録"
-      />
-    </form>
+        <Button type="submit" className="w-full">
+          登録
+        </Button>
+      </form>
+    </Form>
   );
 }
