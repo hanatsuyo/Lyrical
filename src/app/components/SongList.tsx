@@ -79,7 +79,7 @@ const LoadingSkeleton = () => (
   </>
 );
 
-export default function Home() {
+export default function SongList() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
