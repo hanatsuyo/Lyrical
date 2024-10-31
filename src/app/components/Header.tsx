@@ -17,7 +17,7 @@ export default async function Header() {
           </div>
         ) : (
           <a
-            href="/api/auth/login?redirectTo=/registration"
+            href="/api/auth/login?returnTo=/registration/"
             className={buttonVariants({ variant: "outline" })}
           >
             ログイン

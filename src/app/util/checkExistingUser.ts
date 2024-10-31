@@ -11,6 +11,6 @@ export const checkExistingUser = async (email: string) => {
   if (error && error.code !== "PGRST116") {
     throw error;
   }
-
+  console.log(data);
   return data;
 };
