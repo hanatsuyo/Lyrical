@@ -1,6 +1,8 @@
 import { getUserId } from "@/app/util/getUserId";
 import { getSupabase } from "@/app/util/supabase";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
 
 export default async function UserProfile() {
   let userName: string | null = null;
@@ -27,22 +29,20 @@ export default async function UserProfile() {
   }
 
   try {
-    const id = await getUserId();
-    if (id) {
-      userName = await fetchUserName(id);
-    }
   } catch (error) {
     console.error("Error in Header:", error);
   }
   return (
     <>
-      <a href="/api/auth/logout" className="text-white">
+      <a
+        href="/api/auth/logout"
+        className={buttonVariants({ variant: "outline" })}
+      >
         ログアウト
       </a>
-      <Link href="/dashboard/add/">新規追加</Link>
-      <div>
-        <p>{userName}</p>
-      </div>
+      <Button asChild variant="outline">
+        <Link href="/dashboard/add/">新規追加</Link>
+      </Button>
     </>
   );
 }
