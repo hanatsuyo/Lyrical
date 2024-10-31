@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button";
 export default async function Header() {
   const session = await getSession();
   return (
-    <header className="fixed top-0 left-0 w-full border-b border-slate-200">
+    <header className="fixed top-0 left-0 w-full border-b border-slate-200 bg-white z-10">
       <div className="py-3 px-6 flex justify-between items-center">
         <h1 className="text-2xl">リリカル</h1>
 
