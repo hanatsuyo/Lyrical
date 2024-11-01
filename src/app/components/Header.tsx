@@ -2,6 +2,7 @@ import UserProfile from "@/app/components/UserProfile";
 import { Suspense } from "react";
 import { getSession } from "@auth0/nextjs-auth0";
 import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 export default async function Header() {
   const session = await getSession();
   return (
@@ -12,16 +13,24 @@ export default async function Header() {
         {session ? (
           <div className="flex items-center gap-3">
             <Suspense fallback={<div className="w-[300px] bg-white h-6"></div>}>
+              <Link
+                href="/dashboard/"
+                className={buttonVariants({ variant: "outline" })}
+              >
+                Top
+              </Link>
               <UserProfile />
             </Suspense>
           </div>
         ) : (
-          <a
-            href="/api/auth/login?returnTo=/registration/"
-            className={buttonVariants({ variant: "outline" })}
-          >
-            ログイン
-          </a>
+          <>
+            <a
+              href="/api/auth/login?returnTo=/registration/"
+              className={buttonVariants({ variant: "outline" })}
+            >
+              ログイン
+            </a>
+          </>
         )}
       </div>
     </header>

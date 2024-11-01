@@ -17,9 +17,9 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${notoSansJP.variable}`}>
       <UserProvider>
-        <body className="pt-[64px] font-noto-sans-jp">
+        <body className="font-noto-sans-jp min-h-screen">
           <Header />
-          {children}
+          <main className="pt-[64px]">{children}</main>
         </body>
       </UserProvider>
     </html>
