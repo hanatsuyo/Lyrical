@@ -1,16 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalLink, Music2, AlertCircle } from "lucide-react";
+import { Music2, AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 interface Track {
   id: string;
@@ -23,39 +18,30 @@ interface Track {
 
 const TrackCard = ({ track }: { track: Track }) => (
   <Card className="group overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-    <div className="aspect-square relative overflow-hidden">
-      {track.image ? (
-        <img
-          src={track.image}
-          alt={track.name}
-          className="object-cover w-full h-full transition-transform group-hover:scale-110"
-        />
-      ) : (
-        <div className="w-full h-full bg-muted flex items-center justify-center">
-          <Music2 className="h-12 w-12 text-muted-foreground" />
-        </div>
-      )}
-    </div>
-    <CardHeader className="space-y-1">
-      <CardTitle className="line-clamp-1">{track.name}</CardTitle>
-      <p className="text-muted-foreground line-clamp-1">{track.artist}</p>
-    </CardHeader>
-    <CardContent>
-      <p className="text-sm text-muted-foreground line-clamp-1">
-        {track.album}
-      </p>
-    </CardContent>
-    <CardFooter>
-      <a
-        href={track.external_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
-      >
-        Listen on Spotify
-        <ExternalLink className="h-4 w-4 ml-1" />
-      </a>
-    </CardFooter>
+    <Link href={`/song/${track.id}/`}>
+      <div className="aspect-square relative overflow-hidden">
+        {track.image ? (
+          <img
+            src={track.image}
+            alt={track.name}
+            className="object-cover w-full h-full transition-transform group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full bg-muted flex items-center justify-center">
+            <Music2 className="h-12 w-12 text-muted-foreground" />
+          </div>
+        )}
+      </div>
+      <CardHeader className="space-y-1">
+        <CardTitle className="line-clamp-1">{track.name}</CardTitle>
+        <p className="text-muted-foreground line-clamp-1">{track.artist}</p>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm text-muted-foreground line-clamp-1">
+          {track.album}
+        </p>
+      </CardContent>
+    </Link>
   </Card>
 );
 
@@ -71,9 +57,6 @@ const LoadingSkeleton = () => (
         <CardContent>
           <Skeleton className="h-4 w-1/2" />
         </CardContent>
-        <CardFooter>
-          <Skeleton className="h-4 w-32" />
-        </CardFooter>
       </Card>
     ))}
   </>

@@ -40,9 +40,6 @@ export default async function UserProfile() {
       >
         ログアウト
       </a>
-      <Button asChild variant="outline">
-        <Link href="/dashboard/add/">新規追加</Link>
-      </Button>
     </>
   );
 }
