@@ -18,13 +18,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { getUserId } from "@/app/util/getUserId";
+import { useToast } from "@/hooks/use-toast";
 
 type FormValues = {
   title: string;
   category: string;
 };
 
-export default function TitleForm({ trackId }: { trackId: string }) {
+interface TitleFormProps {
+  trackId: string;
+  setOpen: (open: boolean) => void; // モーダルを閉じるための関数
+}
+
+export default function TitleForm({ trackId, setOpen }: TitleFormProps) {
+  const { toast } = useToast();
   const form = useForm<FormValues>({
     defaultValues: {
       title: "",
@@ -32,9 +40,44 @@ export default function TitleForm({ trackId }: { trackId: string }) {
     },
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Submitted data:", { ...data, trackId });
-    form.reset();
+  const onSubmit = async (formData: FormValues) => {
+    const user_id = await getUserId();
+    const data = { ...formData, trackId, user_id };
+    const body = JSON.stringify(data);
+
+    try {
+      const response = await fetch("/api/database/thread/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body,
+      });
+
+      console.log("Response status:", response.status);
+      const responseData = await response.json();
+      console.log("Response data:", responseData);
+
+      if (!response.ok) {
+        throw new Error(responseData.error || "thread failed");
+      }
+
+      // 成功時の処理
+      toast({
+        title: "作成完了",
+        description: "スレッドが正常に作成されました",
+      });
+
+      form.reset();
+      setOpen(false); // モーダルを閉じる
+    } catch (error) {
+      console.error("Error:", error);
+      toast({
+        variant: "destructive",
+        title: "エラー",
+        description: "スレッドの作成に失敗しました",
+      });
+    }
   };
 
   return (

@@ -38,7 +38,10 @@ export async function POST(req: Request) {
 
     // 入力値の検証
     if (!title || typeof title !== "string") {
-      return NextResponse.json({ error: "名前は必須です" }, { status: 400 });
+      return NextResponse.json(
+        { error: "タイトルは必須です" },
+        { status: 400 }
+      );
     }
 
     console.log("Attempting to insert data into Supabase");

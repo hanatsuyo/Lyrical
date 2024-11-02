@@ -1,8 +1,8 @@
-import { getSession } from "@auth0/nextjs-auth0";
-
 export const getUserId = async () => {
-  const session = await getSession();
-  if (!session) throw new Error("session is undefined");
-  const id = session.user.app_uuid;
-  return id;
+  const response = await fetch("/api/user");
+  if (!response.ok) {
+    throw new Error("Failed to fetch user ID");
+  }
+  const data = await response.json();
+  return data.userId;
 };
