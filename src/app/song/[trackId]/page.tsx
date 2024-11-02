@@ -1,13 +1,8 @@
 import Song from "./song";
+import CategoryTab from "./categoryTab";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Form from "./form";
 
 interface PageProps {
@@ -29,12 +24,12 @@ export default async function SongDetail({ params }: PageProps) {
               </Button>
             </DialogTrigger>
             <DialogContent>
-              <DialogHeader>
-                <DialogTitle>スレッドのタイトルを入力</DialogTitle>
-              </DialogHeader>
               <Form trackId={params.trackId} />
             </DialogContent>
           </Dialog>
+          <div className="mt-8">
+            <CategoryTab />
+          </div>
         </div>
       </div>
     </>
