@@ -2,6 +2,56 @@ import { NextResponse } from "next/server";
 import { getSession } from "@auth0/nextjs-auth0";
 import { getSupabase } from "@/app/util/supabase";
 
+// バリデーション用の型定義
+interface ThreadData {
+  title: string;
+  category: string;
+  track_id: string;
+  user_id: string;
+  emoji: string;
+}
+
+// バリデーション用の関数
+function validateThreadData(data: Partial<ThreadData>): {
+  isValid: boolean;
+  error?: string;
+} {
+  if (
+    !data.title ||
+    typeof data.title !== "string" ||
+    data.title.trim() === ""
+  ) {
+    return {
+      isValid: false,
+      error: "タイトルは必須です",
+    };
+  }
+
+  if (
+    !data.category ||
+    typeof data.category !== "string" ||
+    !["source", "video", "other"].includes(data.category)
+  ) {
+    return {
+      isValid: false,
+      error: "有効なカテゴリーを選択してください",
+    };
+  }
+
+  if (
+    !data.emoji ||
+    typeof data.emoji !== "string" ||
+    data.emoji.trim() === ""
+  ) {
+    return {
+      isValid: false,
+      error: "絵文字は必須です",
+    };
+  }
+
+  return { isValid: true };
+}
+
 export async function POST(req: Request) {
   try {
     const supabase = getSupabase();
@@ -9,21 +59,28 @@ export async function POST(req: Request) {
     const session = await getSession();
     console.log("Full session:", JSON.stringify(session, null, 2));
 
-    if (!session) throw new Error("sessionが取得できません");
+    if (!session) {
+      return NextResponse.json(
+        { error: "認証エラー", details: "セッションが見つかりません" },
+        { status: 401 }
+      );
+    }
 
-    let title, user_id, track_id, category;
+    let threadData: Partial<ThreadData>;
 
     try {
       const rawBody = await req.text();
-
       const body = JSON.parse(rawBody);
 
-      user_id = session.user?.app_uuid;
-      title = body.title;
-      category = body.category;
-      track_id = body.trackId;
+      threadData = {
+        user_id: session.user?.app_uuid,
+        title: body.title?.trim(),
+        category: body.category,
+        track_id: body.trackId,
+        emoji: body.emoji?.trim(), // emoji追加
+      };
 
-      console.log("Parsed data:", { user_id, title, category, track_id });
+      console.log("Parsed data:", threadData);
     } catch (e) {
       console.error("Error processing request:", e);
       return NextResponse.json(
@@ -36,10 +93,25 @@ export async function POST(req: Request) {
       );
     }
 
-    // 入力値の検証
-    if (!title || typeof title !== "string") {
+    // バリデーションチェック
+    const validation = validateThreadData(threadData);
+    if (!validation.isValid) {
       return NextResponse.json(
-        { error: "タイトルは必須です" },
+        {
+          error: "バリデーションエラー",
+          details: validation.error,
+        },
+        { status: 400 }
+      );
+    }
+
+    // track_idの存在確認（オプション）
+    if (!threadData.track_id) {
+      return NextResponse.json(
+        {
+          error: "バリデーションエラー",
+          details: "track_idは必須です",
+        },
         { status: 400 }
       );
     }
@@ -47,14 +119,7 @@ export async function POST(req: Request) {
     console.log("Attempting to insert data into Supabase");
     const { data, error } = await supabase
       .from("thread")
-      .insert([
-        {
-          user_id,
-          title,
-          track_id,
-          category,
-        },
-      ])
+      .insert([threadData as ThreadData])
       .select();
 
     if (error) {
@@ -70,7 +135,10 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json(
-      { message: "Successfully registered", data },
+      {
+        message: "Successfully registered",
+        data,
+      },
       { status: 200 }
     );
   } catch (error) {

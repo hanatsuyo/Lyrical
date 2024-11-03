@@ -1,6 +1,11 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
+import { useState, useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -18,33 +23,62 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getUserId } from "@/app/util/getUserId";
-import { useToast } from "@/hooks/use-toast";
 
-type FormValues = {
-  title: string;
-  category: string;
-};
+const formSchema = z.object({
+  title: z.string().min(1, {
+    message: "タイトルを入力してください",
+  }),
+  category: z.string().min(1, {
+    message: "カテゴリーを選択してください",
+  }),
+  emoji: z.string().min(1, {
+    message: "絵文字を選択してください",
+  }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 interface TitleFormProps {
   trackId: string;
-  setOpen: (open: boolean) => void; // モーダルを閉じるための関数
+  setOpen: (open: boolean) => void;
+  defaultCategory: "source" | "video" | "other";
+  onSuccess?: () => void; // onSuccessを追加
 }
 
-export default function TitleForm({ trackId, setOpen }: TitleFormProps) {
-  const { toast } = useToast();
+export default function TitleForm({
+  trackId,
+  setOpen,
+  defaultCategory,
+  onSuccess, // propsに追加
+}: TitleFormProps) {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      category: "",
+      category: defaultCategory,
+      emoji: "",
     },
   });
+
+  useEffect(() => {
+    form.setValue("category", defaultCategory);
+  }, [defaultCategory, form]);
+
+  const onEmojiSelect = (emoji: any) => {
+    form.setValue("emoji", emoji.native, {
+      shouldValidate: true,
+    });
+    setShowEmojiPicker(false);
+  };
 
   const onSubmit = async (formData: FormValues) => {
     const user_id = await getUserId();
     const data = { ...formData, trackId, user_id };
     const body = JSON.stringify(data);
-
     try {
       const response = await fetch("/api/database/thread/add", {
         method: "POST",
@@ -54,29 +88,19 @@ export default function TitleForm({ trackId, setOpen }: TitleFormProps) {
         body,
       });
 
-      console.log("Response status:", response.status);
-      const responseData = await response.json();
-      console.log("Response data:", responseData);
-
       if (!response.ok) {
-        throw new Error(responseData.error || "thread failed");
+        throw new Error("thread failed");
       }
-
-      // 成功時の処理
-      toast({
-        title: "作成完了",
-        description: "スレッドが正常に作成されました",
+      form.reset({
+        title: "",
+        category: defaultCategory,
+        emoji: "",
       });
-
-      form.reset();
-      setOpen(false); // モーダルを閉じる
+      setOpen(false);
+      // 成功時のコールバックを実行
+      onSuccess?.();
     } catch (error) {
       console.error("Error:", error);
-      toast({
-        variant: "destructive",
-        title: "エラー",
-        description: "スレッドの作成に失敗しました",
-      });
     }
   };
 
@@ -96,14 +120,13 @@ export default function TitleForm({ trackId, setOpen }: TitleFormProps) {
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="category"
           render={({ field }) => (
             <FormItem>
               <FormLabel>カテゴリー</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="カテゴリー" />
@@ -115,6 +138,52 @@ export default function TitleForm({ trackId, setOpen }: TitleFormProps) {
                   <SelectItem value="other">その他</SelectItem>
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="emoji"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>絵文字</FormLabel>
+              <Dialog open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+                <DialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    {field.value ? (
+                      <span className="text-2xl">{field.value}</span>
+                    ) : (
+                      "絵文字を選択"
+                    )}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="p-0 sm:max-w-[425px]">
+                  <div className="p-4">
+                    <Picker
+                      data={data}
+                      onEmojiSelect={onEmojiSelect}
+                      locale="ja"
+                      previewPosition="none"
+                      skinTonePosition="none"
+                      theme="light"
+                      set="native"
+                      maxFrequentRows={2}
+                      style={
+                        {
+                          width: "100%",
+                          "--em-rgb-input": "229, 231, 235",
+                        } as any
+                      }
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
               <FormMessage />
             </FormItem>
           )}

@@ -1,6 +1,5 @@
 import Song from "./song";
 import CategoryTab from "./categoryTab";
-import FormDialog from "./formdialog";
 
 interface PageProps {
   params: {
@@ -13,9 +12,8 @@ export default async function SongDetail({ params }: PageProps) {
       <div className="p-8">
         <Song trackId={params.trackId} />
         <div className="mt-4">
-          <FormDialog params={params.trackId} />
           <div className="mt-8">
-            <CategoryTab />
+            <CategoryTab trackId={params.trackId} />
           </div>
         </div>
       </div>

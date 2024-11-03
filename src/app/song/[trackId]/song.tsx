@@ -1,5 +1,7 @@
 "use client";
+
 import { useState, useEffect } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Song({ trackId }: { trackId: string }) {
   const [track, setTrack] = useState<any>(null);
@@ -31,7 +33,30 @@ export default function Song({ trackId }: { trackId: string }) {
   }
 
   if (!track) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <div>
+          <div className="flex items-start gap-8">
+            {/* Image skeleton */}
+            <Skeleton className="flex-shrink-0 w-48 h-48 rounded-lg" />
+
+            <div className="space-y-4 w-full">
+              {/* Title skeleton */}
+              <Skeleton className="h-8 w-3/4" />
+
+              {/* Artist skeleton */}
+              <Skeleton className="h-6 w-1/2" />
+
+              {/* Album name skeleton */}
+              <Skeleton className="h-4 w-1/3" />
+
+              {/* Button skeleton */}
+              <Skeleton className="mt-4 h-10 w-32 rounded-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
