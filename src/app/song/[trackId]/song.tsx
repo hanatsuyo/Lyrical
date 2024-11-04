@@ -3,8 +3,40 @@
 import { useState, useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export default function Song({ trackId }: { trackId: string }) {
-  const [track, setTrack] = useState<any>(null);
+// Spotify APIのレスポンス型定義
+interface SpotifyImage {
+  url: string;
+  height: number;
+  width: number;
+}
+
+interface SpotifyArtist {
+  id: string;
+  name: string;
+}
+
+interface SpotifyAlbum {
+  id: string;
+  name: string;
+  images: SpotifyImage[];
+}
+
+interface SpotifyTrack {
+  id: string;
+  name: string;
+  artists: SpotifyArtist[];
+  album: SpotifyAlbum;
+  external_urls: {
+    spotify: string;
+  };
+}
+
+interface SongProps {
+  trackId: string;
+}
+
+export default function Song({ trackId }: SongProps) {
+  const [track, setTrack] = useState<SpotifyTrack | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -17,7 +49,7 @@ export default function Song({ trackId }: { trackId: string }) {
           throw new Error(errorData.error || "Failed to fetch track");
         }
 
-        const data = await response.json();
+        const data: SpotifyTrack = await response.json();
         setTrack(data);
       } catch (error) {
         console.error("Error:", error);
@@ -71,7 +103,7 @@ export default function Song({ trackId }: { trackId: string }) {
           <div>
             <h1 className="text-3xl font-bold mb-2">{track.name}</h1>
             <p className="text-xl mb-4">
-              {track.artists.map((artist: any) => artist.name).join(", ")}
+              {track.artists.map((artist) => artist.name).join(", ")}
             </p>
             <p className="text-gray-600">Album: {track.album.name}</p>
             <a

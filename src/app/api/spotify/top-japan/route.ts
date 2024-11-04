@@ -1,6 +1,50 @@
 import { getAccessToken } from "@/app/util/getSpotifyAcessToken";
 import { NextResponse } from "next/server";
 
+// Spotifyのレスポンス用の型定義
+interface SpotifyArtist {
+  name: string;
+}
+
+interface SpotifyAlbumImage {
+  url: string;
+}
+
+interface SpotifyAlbum {
+  name: string;
+  images: SpotifyAlbumImage[];
+}
+
+interface SpotifyTrack {
+  id: string;
+  name: string;
+  artists: SpotifyArtist[];
+  album: SpotifyAlbum;
+  preview_url: string | null;
+  external_urls: {
+    spotify: string;
+  };
+}
+
+interface SpotifyPlaylistItem {
+  track: SpotifyTrack;
+}
+
+interface SpotifyPlaylistResponse {
+  items: SpotifyPlaylistItem[];
+}
+
+// 整形後のトラック情報の型定義
+interface FormattedTrack {
+  id: string;
+  name: string;
+  artist: string;
+  album: string;
+  image: string | undefined;
+  preview_url: string | null;
+  external_url: string;
+}
+
 export async function GET() {
   try {
     const token = await getAccessToken();
@@ -22,13 +66,13 @@ export async function GET() {
       throw new Error("Failed to fetch Japan Top 50");
     }
 
-    const data = await response.json();
+    const data: SpotifyPlaylistResponse = await response.json();
 
     // プレイリストのトラック情報を整形
-    const tracks = data.items.map((item: any) => ({
+    const tracks: FormattedTrack[] = data.items.map((item) => ({
       id: item.track.id,
       name: item.track.name,
-      artist: item.track.artists.map((artist: any) => artist.name).join(", "),
+      artist: item.track.artists.map((artist) => artist.name).join(", "),
       album: item.track.album.name,
       image: item.track.album.images[0]?.url,
       preview_url: item.track.preview_url,
@@ -36,8 +80,14 @@ export async function GET() {
     }));
 
     return NextResponse.json(tracks);
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error fetching tracks:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "An unknown error occurred" },
+      { status: 500 }
+    );
   }
 }

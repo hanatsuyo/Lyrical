@@ -1,10 +1,17 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export default function CommentItem({
-  comment,
-}: {
-  comment: Comment & { userName: string | null };
-}) {
+type CommentType = {
+  id: string;
+  content: string;
+  created_at: string;
+  user_id: string;
+};
+
+type CommentWithUser = CommentType & {
+  userName: string | null;
+};
+
+export default function CommentItem({ comment }: { comment: CommentWithUser }) {
   return (
     <div className="flex space-x-4">
       <Avatar className="h-10 w-10 bg-black text-white">
@@ -32,18 +39,3 @@ export default function CommentItem({
     </div>
   );
 }
-
-// メインのコンポーネントのreturn部分を修正
-return (
-  <div className="space-y-6">
-    {comments.length === 0 ? (
-      <p className="text-center text-gray-500 py-4">まだコメントはありません</p>
-    ) : (
-      <div className="space-y-6">
-        {comments.map((comment) => (
-          <CommentItem key={comment.id} comment={comment} />
-        ))}
-      </div>
-    )}
-  </div>
-);

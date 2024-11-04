@@ -4,7 +4,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect, useCallback } from "react";
 import Threads from "./threads";
 import type { Thread } from "@/app/types/thread";
-import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +21,6 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
   const [threadList, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
 
   const fetchThreads = useCallback(async () => {
     setIsLoading(true);
@@ -39,23 +37,14 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
       setThreads(data);
     } catch (error) {
       console.error("Error fetching threads:", error);
-      toast({
-        variant: "destructive",
-        title: "エラー",
-        description: "スレッドの取得に失敗しました。",
-      });
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCategory, trackId, toast]);
+  }, [selectedCategory, trackId]);
 
   const handleCreateSuccess = useCallback(() => {
     fetchThreads();
-    toast({
-      title: "作成完了",
-      description: "新しいスレッドを作成しました。",
-    });
-  }, [fetchThreads, toast]);
+  }, [fetchThreads]);
 
   useEffect(() => {
     fetchThreads();

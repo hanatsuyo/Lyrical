@@ -26,6 +26,7 @@ import {
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getUserId } from "@/app/util/getUserId";
 
+// スキーマ定義
 const formSchema = z.object({
   title: z.string().min(1, {
     message: "タイトルを入力してください",
@@ -38,20 +39,34 @@ const formSchema = z.object({
   }),
 });
 
+// 型定義
 type FormValues = z.infer<typeof formSchema>;
 
 interface TitleFormProps {
   trackId: string;
   setOpen: (open: boolean) => void;
   defaultCategory: "source" | "video" | "other";
-  onSuccess?: () => void; // onSuccessを追加
+  onSuccess?: () => void;
+}
+
+// emoji-martの型定義
+interface EmojiSelectData {
+  native: string;
+  id: string;
+  name: string;
+  unified: string;
+}
+
+// Pickerのスタイル型
+interface PickerStyle extends React.CSSProperties {
+  "--em-rgb-input": string;
 }
 
 export default function TitleForm({
   trackId,
   setOpen,
   defaultCategory,
-  onSuccess, // propsに追加
+  onSuccess,
 }: TitleFormProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -68,7 +83,7 @@ export default function TitleForm({
     form.setValue("category", defaultCategory);
   }, [defaultCategory, form]);
 
-  const onEmojiSelect = (emoji: any) => {
+  const onEmojiSelect = (emoji: EmojiSelectData) => {
     form.setValue("emoji", emoji.native, {
       shouldValidate: true,
     });
@@ -97,10 +112,13 @@ export default function TitleForm({
         emoji: "",
       });
       setOpen(false);
-      // 成功時のコールバックを実行
       onSuccess?.();
     } catch (error) {
-      console.error("Error:", error);
+      if (error instanceof Error) {
+        console.error("Error:", error.message);
+      } else {
+        console.error("Unknown error occurred");
+      }
     }
   };
 
@@ -178,7 +196,7 @@ export default function TitleForm({
                         {
                           width: "100%",
                           "--em-rgb-input": "229, 231, 235",
-                        } as any
+                        } as PickerStyle
                       }
                     />
                   </div>
