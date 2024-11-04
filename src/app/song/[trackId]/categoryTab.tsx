@@ -15,9 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 export default function CategoryTab({ trackId }: { trackId: string }) {
-  const [selectedCategory, setSelectedCategory] = useState<
-    "source" | "video" | "other"
-  >("source");
+  const [selectedCategory, setSelectedCategory] = useState("source");
   const [threadList, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);

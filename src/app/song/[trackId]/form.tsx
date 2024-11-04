@@ -45,7 +45,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface TitleFormProps {
   trackId: string;
   setOpen: (open: boolean) => void;
-  defaultCategory: "source" | "video" | "other";
+  defaultCategory: string;
   onSuccess?: () => void;
 }
 

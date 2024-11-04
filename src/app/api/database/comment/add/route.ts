@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@auth0/nextjs-auth0";
 import { getSupabase } from "@/app/util/supabase";
-
+export const dynamic = "force-dynamic";
 export async function POST(req: Request) {
   try {
     const session = await getSession();

@@ -44,7 +44,7 @@ interface FormattedTrack {
   preview_url: string | null;
   external_url: string;
 }
-
+export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const token = await getAccessToken();

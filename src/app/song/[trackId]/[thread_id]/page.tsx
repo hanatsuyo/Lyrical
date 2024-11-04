@@ -1,6 +1,4 @@
 import Information from "./information";
-import CommentDialog from "./commentDialog";
-import CommentForm from "./commentForm";
 import CommentContents from "./commentContents";
 
 export default function ThreadContent({
