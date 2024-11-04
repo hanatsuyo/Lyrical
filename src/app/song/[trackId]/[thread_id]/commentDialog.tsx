@@ -9,9 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import { Plus } from "lucide-react";
 
-type CommentDialogProps = {
-  children: (props: { setOpen: (open: boolean) => void }) => React.ReactNode;
-};
+// childrenの型を修正
+interface CommentDialogProps {
+  children:
+    | React.ReactNode
+    | ((props: { setOpen: (open: boolean) => void }) => React.ReactNode);
+}
 
 export default function CommentDialog({ children }: CommentDialogProps) {
   const [open, setOpen] = useState(false);
@@ -23,7 +26,7 @@ export default function CommentDialog({ children }: CommentDialogProps) {
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>コメントを投稿</DialogTitle>
-        {typeof children === "function" && children({ setOpen })}
+        {typeof children === "function" ? children({ setOpen }) : children}
       </DialogContent>
     </Dialog>
   );

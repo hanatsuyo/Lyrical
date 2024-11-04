@@ -24,13 +24,13 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function CommentForm({
   thread_id,
-  song_id,
+  trackId,
   setOpen,
   onSuccess,
 }: {
   thread_id: string;
-  song_id: string;
-  setOpen: (open: boolean) => void;
+  trackId: string;
+  setOpen?: (open: boolean) => void;
   onSuccess?: () => void;
 }) {
   const form = useForm<FormValues>({
@@ -45,7 +45,7 @@ export default function CommentForm({
     const data = {
       user_id,
       thread_id,
-      song_id,
+      song_id: trackId,
       content: formData.content,
     };
     const body = JSON.stringify(data);
