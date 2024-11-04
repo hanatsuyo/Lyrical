@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import type { Thread } from "@/app/types/thread";
 import dayjs from "dayjs";
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function Information({ thread_id }: { thread_id: string }) {
   const [threadInfo, setThreadInfo] = useState<Thread>();
   const [isLoading, setIsLoading] = useState(true);
@@ -24,6 +26,7 @@ export default function Information({ thread_id }: { thread_id: string }) {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchThread();
   }, []);
@@ -41,23 +44,39 @@ export default function Information({ thread_id }: { thread_id: string }) {
   };
 
   if (isLoading) {
-    return <p>loading...</p>;
-  } else {
     return (
       <>
-        <span className="flex justify-center text-6xl">
-          {threadInfo?.emoji}
-        </span>
-        <h1 className="text-3xl font-bold mt-8">{threadInfo?.title}</h1>
+        {/* 絵文字のスケルトン */}
+        <div className="flex justify-center">
+          <Skeleton className="h-24 w-24 rounded-full" />
+        </div>
+
+        {/* タイトルのスケルトン */}
+        <div className="mt-8">
+          <Skeleton className="h-10 w-3/4" />
+        </div>
+
+        {/* カテゴリーと日付のスケルトン */}
         <div className="flex justify-between mt-2">
-          {threadInfo?.category && (
-            <p className="bg-black text-white py-1 px-4 rounded-full">
-              {getCategory(threadInfo?.category)}
-            </p>
-          )}
-          <p>公開：{dayjs(threadInfo?.created_at).format("YYYY年MM月D日")}</p>
+          <Skeleton className="h-8 w-20 rounded-full" />
+          <Skeleton className="h-8 w-32" />
         </div>
       </>
     );
   }
+
+  return (
+    <>
+      <span className="flex justify-center text-6xl">{threadInfo?.emoji}</span>
+      <h1 className="text-3xl font-bold mt-8">{threadInfo?.title}</h1>
+      <div className="flex justify-between mt-2">
+        {threadInfo?.category && (
+          <p className="bg-black text-white py-1 px-4 rounded-full">
+            {getCategory(threadInfo?.category)}
+          </p>
+        )}
+        <p>公開：{dayjs(threadInfo?.created_at).format("YYYY年MM月D日")}</p>
+      </div>
+    </>
+  );
 }
