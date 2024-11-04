@@ -118,7 +118,7 @@ export default function CommentContents({
         {({ setOpen }) => (
           <CommentForm
             thread_id={thread_id}
-            song_id={trackId}
+            trackId={trackId}
             setOpen={setOpen}
             onSuccess={fetchCommentsAndUserNames}
           />

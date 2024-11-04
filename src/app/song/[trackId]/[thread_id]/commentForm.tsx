@@ -30,7 +30,7 @@ export default function CommentForm({
 }: {
   thread_id: string;
   trackId: string;
-  setOpen?: (open: boolean) => void;
+  setOpen: (open: boolean) => void;
   onSuccess?: () => void;
 }) {
   const form = useForm<FormValues>({
