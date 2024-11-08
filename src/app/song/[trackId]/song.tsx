@@ -68,7 +68,7 @@ export default function Song({ trackId }: SongProps) {
     return (
       <div>
         <div>
-          <div className="flex items-start gap-8">
+          <div className="flex flex-wrap items-start gap-x-8 gap-y-4">
             {/* Image skeleton */}
             <Skeleton className="flex-shrink-0 w-48 h-48 rounded-lg" />
 
@@ -94,7 +94,7 @@ export default function Song({ trackId }: SongProps) {
   return (
     <div>
       <div>
-        <div className="flex items-start gap-8">
+        <div className="flex flex-wrap items-start gap-x-8 gap-y-4">
           <img
             src={track.album.images[0].url}
             alt={track.name}
