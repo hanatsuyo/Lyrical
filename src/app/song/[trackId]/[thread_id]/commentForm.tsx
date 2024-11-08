@@ -27,11 +27,15 @@ export default function CommentForm({
   trackId,
   setOpen,
   onSuccess,
+  isSubmitting,
+  setSubmitting,
 }: {
   thread_id: string;
   trackId: string;
   setOpen: (open: boolean) => void;
   onSuccess?: () => void;
+  isSubmitting: boolean;
+  setSubmitting: (isSubmitting: boolean) => void;
 }) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -41,6 +45,7 @@ export default function CommentForm({
   });
 
   const onSubmit = async (formData: FormValues) => {
+    setSubmitting(true);
     const user_id = await getUserId();
     const data = {
       user_id,
@@ -67,6 +72,7 @@ export default function CommentForm({
         content: "",
       });
       setOpen(false);
+      setSubmitting(false);
       onSuccess?.();
     } catch (error) {
       console.error("Error:", error);
@@ -93,7 +99,9 @@ export default function CommentForm({
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit">送信</Button>
+          <Button type="submit" disabled={isSubmitting}>
+            送信
+          </Button>
         </div>
       </form>
     </Form>

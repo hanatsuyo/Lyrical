@@ -47,6 +47,8 @@ interface TitleFormProps {
   setOpen: (open: boolean) => void;
   defaultCategory: string;
   onSuccess?: () => void;
+  isSubmitting: boolean;
+  setSubmitting: (isSubmitting: boolean) => void;
 }
 
 // emoji-martの型定義
@@ -67,6 +69,8 @@ export default function TitleForm({
   setOpen,
   defaultCategory,
   onSuccess,
+  isSubmitting,
+  setSubmitting,
 }: TitleFormProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -91,6 +95,7 @@ export default function TitleForm({
   };
 
   const onSubmit = async (formData: FormValues) => {
+    setSubmitting(true);
     const user_id = await getUserId();
     const data = { ...formData, trackId, user_id };
     const body = JSON.stringify(data);
@@ -207,7 +212,9 @@ export default function TitleForm({
           )}
         />
 
-        <Button type="submit">追加</Button>
+        <Button type="submit" disabled={isSubmitting}>
+          追加
+        </Button>
       </form>
     </Form>
   );

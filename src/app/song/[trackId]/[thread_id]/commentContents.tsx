@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Loading from "@/app/components/Loading";
 import { getNameById } from "@/app/util/getName";
 import CommentDialog from "./commentDialog";
 import CommentForm from "./commentForm";
@@ -32,6 +33,7 @@ export default function CommentContents({
   const [comments, setComments] = useState<CommentWithUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [skeletonItems] = useState<SkeletonItem[]>(
     Array.from({ length: 3 }, () => ({ id: crypto.randomUUID() }))
   );
@@ -101,29 +103,34 @@ export default function CommentContents({
 
   return (
     <>
-      <div className="space-y-6">
-        {comments.length === 0 ? (
-          <p className="text-center text-gray-500 py-4">
-            まだコメントはありません
-          </p>
-        ) : (
-          <div className="space-y-6">
-            {comments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
-            ))}
-          </div>
-        )}
+      <div>
+        <div className="space-y-6">
+          {comments.length === 0 ? (
+            <p className="text-center text-gray-500 py-4">
+              まだコメントはありません
+            </p>
+          ) : (
+            <div className="space-y-6">
+              {comments.map((comment) => (
+                <CommentItem key={comment.id} comment={comment} />
+              ))}
+            </div>
+          )}
+        </div>
+        <CommentDialog>
+          {({ setOpen }) => (
+            <CommentForm
+              thread_id={thread_id}
+              trackId={trackId}
+              setOpen={setOpen}
+              onSuccess={fetchCommentsAndUserNames}
+              isSubmitting={isFormSubmitting}
+              setSubmitting={setIsFormSubmitting}
+            />
+          )}
+        </CommentDialog>
+        {isFormSubmitting && <Loading />}
       </div>
-      <CommentDialog>
-        {({ setOpen }) => (
-          <CommentForm
-            thread_id={thread_id}
-            trackId={trackId}
-            setOpen={setOpen}
-            onSuccess={fetchCommentsAndUserNames}
-          />
-        )}
-      </CommentDialog>
     </>
   );
 }

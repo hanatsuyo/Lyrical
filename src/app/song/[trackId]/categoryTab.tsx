@@ -13,11 +13,13 @@ import {
 import TitleForm from "./form";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import Loading from "@/app/components/Loading";
 
 export default function CategoryTab({ trackId }: { trackId: string }) {
   const [selectedCategory, setSelectedCategory] = useState("source");
   const [threadList, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const fetchThreads = useCallback(async () => {
@@ -42,6 +44,7 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
 
   const handleCreateSuccess = useCallback(() => {
     fetchThreads();
+    setIsFormSubmitting(false);
   }, [fetchThreads]);
 
   useEffect(() => {
@@ -49,50 +52,55 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
   }, [fetchThreads]);
 
   return (
-    <div className="space-y-4">
-      <Tabs
-        defaultValue="source"
-        value={selectedCategory}
-        onValueChange={setSelectedCategory}
-        className="w-full"
-      >
-        <div className="flex items-center space-x-4 mb-4">
-          <TabsList className="flex-none">
-            <TabsTrigger value="source">音源</TabsTrigger>
-            <TabsTrigger value="video">映像</TabsTrigger>
-            <TabsTrigger value="other">その他</TabsTrigger>
-          </TabsList>
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm" variant="default">
-                <Plus className="h-4 w-4 mr-2" />
-                新規作成
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>新規スレッド作成</DialogTitle>
-              <TitleForm
-                trackId={trackId}
-                setOpen={setIsOpen}
-                defaultCategory={selectedCategory}
-                onSuccess={handleCreateSuccess}
-              />
-            </DialogContent>
-          </Dialog>
-        </div>
+    <div>
+      <div className="space-y-4">
+        <Tabs
+          defaultValue="source"
+          value={selectedCategory}
+          onValueChange={setSelectedCategory}
+          className="w-full"
+        >
+          <div className="flex items-center space-x-4 mb-4">
+            <TabsList className="flex-none">
+              <TabsTrigger value="source">音源</TabsTrigger>
+              <TabsTrigger value="video">映像</TabsTrigger>
+              <TabsTrigger value="other">その他</TabsTrigger>
+            </TabsList>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="default">
+                  <Plus className="h-4 w-4 mr-2" />
+                  新規作成
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogTitle>新規スレッド作成</DialogTitle>
+                <TitleForm
+                  trackId={trackId}
+                  setOpen={setIsOpen}
+                  defaultCategory={selectedCategory}
+                  onSuccess={handleCreateSuccess}
+                  isSubmitting={isFormSubmitting}
+                  setSubmitting={setIsFormSubmitting}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
 
-        <TabsContent value="source">
-          <Threads threadList={threadList} isLoading={isLoading} />
-        </TabsContent>
+          <TabsContent value="source">
+            <Threads threadList={threadList} isLoading={isLoading} />
+          </TabsContent>
 
-        <TabsContent value="video">
-          <Threads threadList={threadList} isLoading={isLoading} />
-        </TabsContent>
+          <TabsContent value="video">
+            <Threads threadList={threadList} isLoading={isLoading} />
+          </TabsContent>
 
-        <TabsContent value="other">
-          <Threads threadList={threadList} isLoading={isLoading} />
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="other">
+            <Threads threadList={threadList} isLoading={isLoading} />
+          </TabsContent>
+        </Tabs>
+      </div>
+      {isFormSubmitting && <Loading />}
     </div>
   );
 }
