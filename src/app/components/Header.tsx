@@ -1,9 +1,7 @@
 import { getSession } from "@auth0/nextjs-auth0";
 import { buttonVariants } from "@/components/ui/button";
+import Hamburger from "./Hamburger";
 import Link from "next/link";
-import { Menu } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
 export default async function Header() {
   const session = await getSession();
 
@@ -37,16 +35,7 @@ export default async function Header() {
             </div>
 
             {/* モバイルメニュー */}
-            <Sheet>
-              <SheetTrigger className="md:hidden">
-                <Menu className="w-6 h-6" />
-              </SheetTrigger>
-              <SheetContent side="right" className="w-64">
-                <div className="flex flex-col gap-4 mt-6">
-                  <NavItems />
-                </div>
-              </SheetContent>
-            </Sheet>
+            <Hamburger />
           </>
         ) : (
           <a
