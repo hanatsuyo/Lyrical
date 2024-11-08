@@ -22,6 +22,7 @@ function ThreadSkeleton() {
 }
 
 export default function Threads({ threadList, isLoading }: Props) {
+  // ローディング中の表示
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-0 px-2">
@@ -34,9 +35,21 @@ export default function Threads({ threadList, isLoading }: Props) {
     );
   }
 
+  // threadListが未定義またはnullの場合は空配列を使用
+  const threads = Array.isArray(threadList) ? threadList : [];
+
+  // スレッドが0件の場合のメッセージ
+  if (threads.length === 0) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-lg text-gray-500">スレッドがありません</p>
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-0 px-2">
-      {threadList.map((thread) => (
+      {threads.map((thread) => (
         <Card
           key={thread.thread_id}
           className="overflow-hidden hover:shadow-lg transition-shadow duration-300"

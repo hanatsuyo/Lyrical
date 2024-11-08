@@ -1,6 +1,6 @@
 import { getSupabase } from "./supabase";
 
-export const checkExistingUser = async (email: string) => {
+export const checkRegistration = async (email: string) => {
   const supabase = getSupabase();
   const { data, error } = await supabase
     .from("user")
