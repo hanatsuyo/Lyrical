@@ -7,17 +7,20 @@ export default async function Header() {
 
   const NavItems = () => (
     <>
-      <Link href="/dashboard/" className={buttonVariants({ variant: "ghost" })}>
-        dashboard
+      <Link
+        href="/dashboard/"
+        className={buttonVariants({ variant: "default" })}
+      >
+        ダッシュボード
       </Link>
-      <Link href="/mypage/" className={buttonVariants({ variant: "ghost" })}>
-        mypage
+      <Link href="/mypage/" className={buttonVariants({ variant: "default" })}>
+        マイページ
       </Link>
       <a
         href="/api/auth/logout"
-        className={buttonVariants({ variant: "ghost" })}
+        className={buttonVariants({ variant: "outline" })}
       >
-        Logout
+        ログアウト
       </a>
     </>
   );

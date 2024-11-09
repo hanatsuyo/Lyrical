@@ -14,9 +14,10 @@ import TitleForm from "./form";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Loading from "@/app/components/Loading";
+import { categoryList } from "@/app/data/category";
 
 export default function CategoryTab({ trackId }: { trackId: string }) {
-  const [selectedCategory, setSelectedCategory] = useState("source");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [threadList, setThreads] = useState<Thread[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
@@ -47,6 +48,41 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
     setIsFormSubmitting(false);
   }, [fetchThreads]);
 
+  const [isVisible, setIsVisible] = useState(false);
+  const threshold = 0.4;
+  useEffect(() => {
+    // ダミーの要素を作成して監視
+    const target = document.createElement("div");
+    target.style.position = "absolute";
+    target.style.top = `${threshold * 100}%`;
+    document.body.appendChild(target);
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // 要素が画面外に出たら表示
+        setIsVisible(!entry.isIntersecting);
+      },
+      {
+        threshold: 0,
+      }
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+      document.body.removeChild(target);
+    };
+  }, [threshold]);
+
+  // アニメーション用のクラス
+  const buttonClass = `fixed bottom-6 right-6 w-14 h-14 rounded-full bg-black grid justify-center items-center hover:scale-125 transition-all duration-300 ease-out
+    ${
+      isVisible
+        ? "opacity-100 translate-y-0"
+        : "opacity-0 translate-y-10 pointer-events-none"
+    }`;
+
   useEffect(() => {
     fetchThreads();
   }, [fetchThreads]);
@@ -61,43 +97,45 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
           className="w-full"
         >
           <div className="flex items-center space-x-4 mb-4">
-            <TabsList className="flex-none">
-              <TabsTrigger value="source">音源</TabsTrigger>
-              <TabsTrigger value="video">映像</TabsTrigger>
-              <TabsTrigger value="other">その他</TabsTrigger>
-            </TabsList>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger asChild>
-                <Button size="sm" variant="default">
-                  <Plus className="h-4 w-4 mr-2" />
-                  新規作成
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogTitle>新規スレッド作成</DialogTitle>
-                <TitleForm
-                  trackId={trackId}
-                  setOpen={setIsOpen}
-                  defaultCategory={selectedCategory}
-                  onSuccess={handleCreateSuccess}
-                  isSubmitting={isFormSubmitting}
-                  setSubmitting={setIsFormSubmitting}
-                />
-              </DialogContent>
-            </Dialog>
+            <div className="overflow-x-auto">
+              <TabsList className="flex-none">
+                {categoryList.map((category) => (
+                  <TabsTrigger key={category.value} value={category.value}>
+                    {category.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
           </div>
-
-          <TabsContent value="source">
-            <Threads threadList={threadList} isLoading={isLoading} />
-          </TabsContent>
-
-          <TabsContent value="video">
-            <Threads threadList={threadList} isLoading={isLoading} />
-          </TabsContent>
-
-          <TabsContent value="other">
-            <Threads threadList={threadList} isLoading={isLoading} />
-          </TabsContent>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="default">
+                <Plus className="h-4 w-4 mr-2" />
+                <span>新規作成</span>
+              </Button>
+            </DialogTrigger>
+            <DialogTrigger className={buttonClass}>
+              <Plus className="w-8 h-8 text-white" />
+            </DialogTrigger>
+            <DialogContent className="max-w-[500px] w-[90%] rounded-lg">
+              <DialogTitle>新規スレッド作成</DialogTitle>
+              <TitleForm
+                trackId={trackId}
+                setOpen={setIsOpen}
+                defaultCategory={selectedCategory}
+                onSuccess={handleCreateSuccess}
+                isSubmitting={isFormSubmitting}
+                setSubmitting={setIsFormSubmitting}
+              />
+            </DialogContent>
+          </Dialog>
+          <div>
+            {categoryList.map((category) => (
+              <TabsContent key={category.value} value={category.value}>
+                <Threads threadList={threadList} isLoading={isLoading} />
+              </TabsContent>
+            ))}
+          </div>
         </Tabs>
       </div>
       {isFormSubmitting && <Loading />}

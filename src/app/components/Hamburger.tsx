@@ -20,21 +20,21 @@ export default function Hamburger() {
             onClick={() => setIsOpen(false)}
             className={buttonVariants({ variant: "ghost" })}
           >
-            dashboard
+            ダッシュボード
           </Link>
           <Link
             href="/mypage/"
             onClick={() => setIsOpen(false)}
             className={buttonVariants({ variant: "ghost" })}
           >
-            mypage
+            マイページ
           </Link>
           <a
             href="/api/auth/logout"
             onClick={() => setIsOpen(false)}
             className={buttonVariants({ variant: "ghost" })}
           >
-            Logout
+            ログアウト
           </a>
         </div>
       </SheetContent>

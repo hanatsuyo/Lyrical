@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@auth0/nextjs-auth0";
 import { getSupabase } from "@/app/util/supabase";
+import { categoryList } from "@/app/data/category";
 
 // バリデーション用の型定義
 interface ThreadData {
@@ -26,18 +27,17 @@ function validateThreadData(data: Partial<ThreadData>): {
       error: "タイトルは必須です",
     };
   }
-
+  const validCategories = categoryList.map((category) => category.value);
   if (
     !data.category ||
     typeof data.category !== "string" ||
-    !["source", "video", "other"].includes(data.category)
+    !validCategories.includes(data.category)
   ) {
     return {
       isValid: false,
       error: "有効なカテゴリーを選択してください",
     };
   }
-
   if (
     !data.emoji ||
     typeof data.emoji !== "string" ||

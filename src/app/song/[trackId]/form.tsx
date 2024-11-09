@@ -25,6 +25,8 @@ import {
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getUserId } from "@/app/util/getUserId";
+import { categoryList } from "@/app/data/category";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 // スキーマ定義
 const formSchema = z.object({
@@ -84,7 +86,10 @@ export default function TitleForm({
   });
 
   useEffect(() => {
-    form.setValue("category", defaultCategory);
+    form.setValue(
+      "category",
+      defaultCategory !== "all" ? defaultCategory : "other"
+    );
   }, [defaultCategory, form]);
 
   const onEmojiSelect = (emoji: EmojiSelectData) => {
@@ -156,9 +161,13 @@ export default function TitleForm({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="source">音源</SelectItem>
-                  <SelectItem value="video">映像</SelectItem>
-                  <SelectItem value="other">その他</SelectItem>
+                  {categoryList
+                    .filter((category) => category.value !== "all")
+                    .map((category) => (
+                      <SelectItem key={category.value} value={category.value}>
+                        {category.label}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -187,6 +196,7 @@ export default function TitleForm({
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="p-0 sm:max-w-[425px]">
+                  <DialogTitle className="hidden">絵文字選択</DialogTitle>
                   <div className="p-4">
                     <Picker
                       data={data}

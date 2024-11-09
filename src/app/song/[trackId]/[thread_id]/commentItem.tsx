@@ -32,7 +32,7 @@ export default function CommentItem({ comment }: { comment: CommentWithUser }) {
                 ? "今日"
                 : dayjs(comment.created_at).format("YYYY年M月D日")}
             </span>
-            <span>{dayjs(comment.created_at).format("H:m")}</span>
+            <span>{dayjs(comment.created_at).format("H:mm")}</span>
           </span>
         </div>
         <p className="mt-1 text-gray-700 whitespace-pre-wrap">

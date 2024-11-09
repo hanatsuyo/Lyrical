@@ -72,7 +72,7 @@ export default function Song({ trackId }: SongProps) {
             {/* Image skeleton */}
             <Skeleton className="flex-shrink-0 w-48 h-48 rounded-lg" />
 
-            <div className="space-y-4 w-full">
+            <div className="space-y-4 w-3/4">
               {/* Title skeleton */}
               <Skeleton className="h-8 w-3/4" />
 

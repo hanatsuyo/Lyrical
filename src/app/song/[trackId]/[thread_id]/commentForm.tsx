@@ -22,6 +22,16 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+type CommentFormProps = {
+  thread_id: string;
+  trackId: string;
+  setOpen?: (open: boolean) => void; // オプショナルに変更
+  onSuccess?: () => void;
+  isSubmitting: boolean;
+  setSubmitting: (isSubmitting: boolean) => void;
+  minHeight?: string;
+};
+
 export default function CommentForm({
   thread_id,
   trackId,
@@ -29,14 +39,8 @@ export default function CommentForm({
   onSuccess,
   isSubmitting,
   setSubmitting,
-}: {
-  thread_id: string;
-  trackId: string;
-  setOpen: (open: boolean) => void;
-  onSuccess?: () => void;
-  isSubmitting: boolean;
-  setSubmitting: (isSubmitting: boolean) => void;
-}) {
+  minHeight,
+}: CommentFormProps) {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,7 +75,10 @@ export default function CommentForm({
       form.reset({
         content: "",
       });
-      setOpen(false);
+
+      // setOpenがある場合のみ実行
+      setOpen?.(false);
+
       setSubmitting(false);
       onSuccess?.();
     } catch (error) {
@@ -90,7 +97,9 @@ export default function CommentForm({
               <FormControl>
                 <Textarea
                   placeholder="コメントを入力"
-                  className="min-h-[100px] resize-none"
+                  className={`resize-none ${
+                    minHeight ? `min-h-[${minHeight}]` : "min-h-[100px]"
+                  }`}
                   {...field}
                 />
               </FormControl>

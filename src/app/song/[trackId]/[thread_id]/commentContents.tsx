@@ -111,6 +111,14 @@ export default function CommentContents({
   return (
     <>
       <div>
+        <CommentForm
+          thread_id={thread_id}
+          trackId={trackId}
+          onSuccess={fetchCommentsAndUserNames}
+          isSubmitting={isFormSubmitting}
+          setSubmitting={setIsFormSubmitting}
+          minHeight="40px"
+        />
         <div className="space-y-6">
           {comments.length === 0 ? (
             <p className="text-center text-gray-500 py-4">

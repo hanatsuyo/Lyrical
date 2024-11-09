@@ -36,7 +36,12 @@ export default function Threads({ threadList, isLoading }: Props) {
   }
 
   // threadListが未定義またはnullの場合は空配列を使用
-  const threads = Array.isArray(threadList) ? threadList : [];
+  const threads = Array.isArray(threadList)
+    ? [...threadList].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      )
+    : [];
 
   // スレッドが0件の場合のメッセージ
   if (threads.length === 0) {
