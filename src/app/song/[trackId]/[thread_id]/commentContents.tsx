@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Loading from "@/app/components/Loading";
 import { getNameById } from "@/app/util/getName";
@@ -77,6 +77,13 @@ export default function CommentContents({
     fetchCommentsAndUserNames();
   }, [thread_id, trackId]);
 
+  const sortedComments = useMemo(() => {
+    return [...comments].sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  }, [comments]);
+
   if (error) {
     return (
       <div className="text-center text-red-500 py-4">
@@ -111,7 +118,7 @@ export default function CommentContents({
             </p>
           ) : (
             <div className="space-y-6">
-              {comments.map((comment) => (
+              {sortedComments.map((comment) => (
                 <CommentItem key={comment.id} comment={comment} />
               ))}
             </div>
