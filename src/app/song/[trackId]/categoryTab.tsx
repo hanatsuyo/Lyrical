@@ -117,7 +117,7 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
             <DialogTrigger className={buttonClass}>
               <Plus className="w-8 h-8 text-white" />
             </DialogTrigger>
-            <DialogContent className="max-w-[500px] w-[90%] rounded-lg">
+            <DialogContent className="top-[30%]  sm:top-[50%] max-w-[500px] w-[90%] rounded-lg">
               <DialogTitle>新規スレッド作成</DialogTitle>
               <TitleForm
                 trackId={trackId}
