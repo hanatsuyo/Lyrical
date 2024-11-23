@@ -91,7 +91,7 @@ export default function CommentContents({
           setSubmitting={setIsFormSubmitting}
           minHeight="40px"
         />
-        <div className="space-y-6">
+        <div className="space-y-6 mt-8">
           {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
@@ -110,8 +110,10 @@ export default function CommentContents({
             </p>
           ) : (
             <div className="space-y-6">
-              {sortedComments.map((comment) => (
-                <CommentItem key={comment.id} comment={comment} />
+              {sortedComments.map((comment, i) => (
+                <div key={i}>
+                  <CommentItem key={comment.id} comment={comment} />
+                </div>
               ))}
             </div>
           )}
