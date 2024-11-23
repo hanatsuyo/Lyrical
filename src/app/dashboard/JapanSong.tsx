@@ -19,7 +19,7 @@ interface Track {
 }
 
 const TrackCard = ({ track }: { track: Track }) => (
-  <div className="flex-[0_0_min(280px,100%)] max-w-full md:flex-[0_0_320px]">
+  <div className="flex-[0_0_100%] md:flex-[0_0_320px]">
     <Card className="group overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
       <Link href={`/song/${track.id}/`}>
         <div className="aspect-square relative overflow-hidden">
@@ -70,7 +70,7 @@ const LoadingSkeleton = () => (
   </>
 );
 
-export default function SongList({ api }: { api: string }) {
+export default function SongList() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +86,7 @@ export default function SongList({ api }: { api: string }) {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const response = await fetch(api);
+        const response = await fetch("/api/spotify/top-japan");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -121,28 +121,34 @@ export default function SongList({ api }: { api: string }) {
   }
 
   return (
-    <div className="relative">
-      <div className="cursor-grab active:cursor-grabbing" ref={emblaRef}>
-        <div className="flex gap-4">
-          {loading ? (
-            <LoadingSkeleton />
-          ) : tracks.length > 0 ? (
-            tracks.map((track) => <TrackCard key={track.id} track={track} />)
-          ) : (
-            <Alert>
-              <AlertDescription>曲が見つかりませんでした。</AlertDescription>
-            </Alert>
-          )}
+    <div className="mx-auto py-6">
+      <h1 className="text-3xl font-bold mb-6">日本トップ50</h1>
+      <div className="relative">
+        <div
+          className="overflow-hidden cursor-grab active:cursor-grabbing"
+          ref={emblaRef}
+        >
+          <div className="flex gap-4">
+            {loading ? (
+              <LoadingSkeleton />
+            ) : tracks.length > 0 ? (
+              tracks.map((track) => <TrackCard key={track.id} track={track} />)
+            ) : (
+              <Alert>
+                <AlertDescription>曲が見つかりませんでした。</AlertDescription>
+              </Alert>
+            )}
+          </div>
         </div>
-      </div>
 
-      <div className="flex gap-2 mt-4">
-        <Button variant="outline" size="lg" onClick={scrollPrev} className="">
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <Button variant="outline" size="lg" onClick={scrollNext} className="">
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        <div className="flex gap-2 mt-4">
+          <Button variant="outline" size="lg" onClick={scrollPrev} className="">
+            <ChevronLeft className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="lg" onClick={scrollNext} className="">
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

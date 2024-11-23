@@ -8,8 +8,19 @@ export default async function DashBoard() {
   const existingUser = await checkRegistration(session.user.email);
   if (!existingUser) redirect("/registration");
   return (
-    <div>
-      <SongList />
+    <div className="grid gap-16 py-6 ">
+      <div>
+        <h2 className="font-bold text-3xl">日本トップ50</h2>
+        <div className="mt-4">
+          <SongList api="/api/spotify/top-japan" />
+        </div>
+      </div>
+      <div>
+        <h2 className="font-bold text-3xl">世界トップ50</h2>
+        <div className="mt-4">
+          <SongList api="/api/spotify/top-global" />
+        </div>
+      </div>
     </div>
   );
 }

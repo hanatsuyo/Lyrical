@@ -19,7 +19,9 @@ export default function RootLayout({
       <UserProvider>
         <body className="font-noto-sans-jp min-h-screen">
           <Header />
-          <main className="pt-[64px]">{children}</main>
+          <div className="overflow-x-hidden">
+            <main className="pt-[64px] px-6 md:px-12">{children}</main>
+          </div>
         </body>
       </UserProvider>
     </html>
