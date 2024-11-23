@@ -1,14 +1,13 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Music2, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { Button } from "@/components/ui/button";
-
+import useSWR from "swr";
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 interface Track {
   id: string;
   name: string;
@@ -50,7 +49,7 @@ const TrackCard = ({ track }: { track: Track }) => (
 
 const LoadingSkeleton = () => (
   <>
-    {[...Array(6)].map((_, i) => (
+    {[...Array(20)].map((_, i) => (
       <div key={i} className="flex-[0_0_100%] flex-[0_0_200px]">
         <Card className="overflow-hidden">
           <Skeleton className="aspect-square" />
@@ -58,9 +57,6 @@ const LoadingSkeleton = () => (
             <Skeleton className="h-5 w-4/5" />
             <Skeleton className="h-4 w-2/3" />
           </CardHeader>
-          <CardContent>
-            <Skeleton className="h-4 w-1/2" />
-          </CardContent>
         </Card>
       </div>
     ))}
@@ -68,9 +64,6 @@ const LoadingSkeleton = () => (
 );
 
 export default function SongList({ api }: { api: string }) {
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     containScroll: false,
@@ -79,33 +72,7 @@ export default function SongList({ api }: { api: string }) {
 
   const scrollPrev = () => emblaApi?.scrollPrev();
   const scrollNext = () => emblaApi?.scrollNext();
-
-  useEffect(() => {
-    const fetchTracks = async () => {
-      try {
-        const response = await fetch(api);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-          console.error("Received data:", data);
-          throw new Error("Received data is not an array");
-        }
-
-        setTracks(data);
-      } catch (error) {
-        console.error("Error:", error);
-        setError(error instanceof Error ? error.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTracks();
-  }, []);
-
+  const { data: tracks, error, isLoading } = useSWR<Track[]>(api, fetcher);
   if (error) {
     return (
       <div className="p-4">
@@ -121,9 +88,9 @@ export default function SongList({ api }: { api: string }) {
     <div className="relative">
       <div className="cursor-grab active:cursor-grabbing" ref={emblaRef}>
         <div className="flex gap-4">
-          {loading ? (
+          {isLoading ? (
             <LoadingSkeleton />
-          ) : tracks.length > 0 ? (
+          ) : tracks?.length ? (
             tracks.map((track) => <TrackCard key={track.id} track={track} />)
           ) : (
             <Alert>

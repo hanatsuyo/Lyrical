@@ -1,7 +1,6 @@
 "use client";
 
 import { getUserId } from "@/app/util/getUserId";
-import { useState, useEffect } from "react";
 import type { Thread } from "@/app/types/thread";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,6 +17,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
+import useSWR, { mutate } from "swr";
+import { useState } from "react";
 
 function ThreadSkeleton() {
   return (
@@ -32,35 +33,27 @@ function ThreadSkeleton() {
   );
 }
 
+// フェッチャー関数
+const fetcher = async (url: string) => {
+  const user_id = await getUserId();
+  const response = await fetch(`${url}?user_id=${user_id}`);
+  if (!response.ok) throw new Error("データの取得に失敗しました。");
+  const data = await response.json();
+  return Array.isArray(data) ? data : [];
+};
+
 export default function Threads() {
-  const [threadList, setThreadList] = useState<Thread[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Thread | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchThreads = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const user_id = await getUserId();
-      const response = await fetch(
-        `/api/database/thread/get/thread_list/byUserId?user_id=${user_id}`
-      );
-
-      if (!response.ok) {
-        throw new Error("データの取得に失敗しました。");
-      }
-
-      const data = await response.json();
-      setThreadList(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error("Error fetching threads:", error);
-      setError(error instanceof Error ? error.message : "エラーが発生しました");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    data: threadList,
+    error,
+    isLoading,
+  } = useSWR<Thread[]>(
+    "/api/database/thread/get/thread_list/byUserId",
+    fetcher
+  );
 
   const handleDelete = async (thread: Thread) => {
     setIsDeleting(true);
@@ -77,9 +70,8 @@ export default function Threads() {
         throw new Error("削除に失敗しました");
       }
 
-      setThreadList((current) =>
-        current.filter((t) => t.thread_id !== thread.thread_id)
-      );
+      // キャッシュを更新
+      await mutate("/api/database/thread/get/thread_list/byUserId");
     } catch (error) {
       console.error("Delete error:", error);
     } finally {
@@ -87,10 +79,6 @@ export default function Threads() {
       setDeleteTarget(null);
     }
   };
-
-  useEffect(() => {
-    fetchThreads();
-  }, []);
 
   if (isLoading) {
     return (
@@ -107,12 +95,12 @@ export default function Threads() {
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-lg text-red-500">{error}</p>
+        <p className="text-lg text-red-500">{error.message}</p>
       </div>
     );
   }
 
-  if (threadList.length === 0) {
+  if (!threadList || threadList.length === 0) {
     return (
       <div className="text-center py-8">
         <p className="text-lg text-gray-500">スレッドがありません</p>

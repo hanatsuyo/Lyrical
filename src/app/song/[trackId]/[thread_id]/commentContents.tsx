@@ -1,12 +1,14 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Loading from "@/app/components/Loading";
 import { getNameById } from "@/app/util/getName";
 import CommentDialog from "./commentDialog";
 import CommentForm from "./commentForm";
 import CommentItem from "./commentItem";
+import useSWR, { mutate } from "swr";
+import { useState } from "react";
 
 type CommentType = {
   id: string;
@@ -19,8 +21,21 @@ type CommentWithUser = CommentType & {
   userName: string | null;
 };
 
-type SkeletonItem = {
-  id: string;
+const fetchCommentsAndUserNames = async (
+  url: string
+): Promise<CommentWithUser[]> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("コメントの取得に失敗しました");
+  }
+  const commentsData: CommentType[] = await response.json();
+
+  return Promise.all(
+    commentsData.map(async (comment) => ({
+      ...comment,
+      userName: await getNameById(comment.user_id),
+    }))
+  );
 };
 
 export default function CommentContents({
@@ -30,54 +45,27 @@ export default function CommentContents({
   thread_id: string;
   trackId: string;
 }) {
-  const [comments, setComments] = useState<CommentWithUser[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
-  const [skeletonItems] = useState<SkeletonItem[]>(
-    Array.from({ length: 3 }, () => ({ id: crypto.randomUUID() }))
-  );
 
-  const fetchCommentsAndUserNames = async () => {
-    try {
-      const queryParams = new URLSearchParams({
-        thread_id,
-        trackId,
-      });
+  const queryParams = new URLSearchParams({
+    thread_id,
+    trackId,
+  }).toString();
+  const apiUrl = `/api/database/comment/get/comment_list?${queryParams}`;
 
-      const response = await fetch(
-        `/api/database/comment/get/comment_list?${queryParams}`
-      );
+  const {
+    data: comments,
+    error,
+    isLoading,
+  } = useSWR<CommentWithUser[]>(apiUrl, fetchCommentsAndUserNames);
 
-      if (!response.ok) {
-        throw new Error("コメントの取得に失敗しました");
-      }
-
-      const commentsData = await response.json();
-
-      const commentsWithUserNames = await Promise.all(
-        commentsData.map(async (comment: CommentType) => {
-          const userName = await getNameById(comment.user_id);
-          return {
-            ...comment,
-            userName,
-          };
-        })
-      );
-
-      setComments(commentsWithUserNames);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "エラーが発生しました");
-    } finally {
-      setIsLoading(false);
-    }
+  const handleCommentSuccess = async () => {
+    await mutate(apiUrl);
+    setIsFormSubmitting(false);
   };
 
-  useEffect(() => {
-    fetchCommentsAndUserNames();
-  }, [thread_id, trackId]);
-
   const sortedComments = useMemo(() => {
+    if (!comments) return [];
     return [...comments].sort(
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -87,23 +75,7 @@ export default function CommentContents({
   if (error) {
     return (
       <div className="text-center text-red-500 py-4">
-        <p>{error}</p>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        {skeletonItems.map((item) => (
-          <div key={item.id} className="flex space-x-4">
-            <Skeleton className="h-10 w-10 rounded-full" />
-            <div className="space-y-2 flex-1">
-              <Skeleton className="h-4 w-[200px]" />
-              <Skeleton className="h-4 w-full" />
-            </div>
-          </div>
-        ))}
+        <p>{error.message}</p>
       </div>
     );
   }
@@ -114,13 +86,25 @@ export default function CommentContents({
         <CommentForm
           thread_id={thread_id}
           trackId={trackId}
-          onSuccess={fetchCommentsAndUserNames}
+          onSuccess={handleCommentSuccess}
           isSubmitting={isFormSubmitting}
           setSubmitting={setIsFormSubmitting}
           minHeight="40px"
         />
         <div className="space-y-6">
-          {comments.length === 0 ? (
+          {isLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex space-x-4">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="space-y-2 flex-1">
+                    <Skeleton className="h-4 w-[200px]" />
+                    <Skeleton className="h-4 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : !comments || comments.length === 0 ? (
             <p className="text-center text-gray-500 py-4">
               まだコメントはありません
             </p>
@@ -138,7 +122,7 @@ export default function CommentContents({
               thread_id={thread_id}
               trackId={trackId}
               setOpen={setOpen}
-              onSuccess={fetchCommentsAndUserNames}
+              onSuccess={handleCommentSuccess}
               isSubmitting={isFormSubmitting}
               setSubmitting={setIsFormSubmitting}
             />

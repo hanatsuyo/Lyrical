@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { getUserId } from "@/app/util/getUserId";
-import { categoryList } from "@/app/data/category";
+import { categoryList } from "@/data/category";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
 // スキーマ定義

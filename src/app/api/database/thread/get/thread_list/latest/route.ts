@@ -1,26 +1,31 @@
 // app/api/threads/route.ts
 import { getSupabase } from "@/app/util/supabase";
 import { NextResponse } from "next/server";
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const thread_id = searchParams.get("thread_id");
+    const category = searchParams.get("category");
+    const trackId = searchParams.get("trackId");
 
-    if (!thread_id) {
+    if (!category || !trackId) {
       return NextResponse.json(
-        { error: "thread_id is required" },
+        { error: "Category and trackId are required" },
         { status: 400 }
       );
     }
 
     const supabase = getSupabase();
-    const { data, error } = await supabase
+    const query = supabase
       .from("thread")
-      .select()
-      .eq("thread_id", thread_id)
-      .maybeSingle();
+      .select("*")
+      .order("created_at", { ascending: false }) // 作成日時の降順（最新順）
+      .limit(9); // 9件に制限
+
+    const { data, error } = await query;
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });

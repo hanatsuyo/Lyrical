@@ -1,98 +1,14 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-
-// Spotify APIのレスポンス型定義
-interface SpotifyImage {
-  url: string;
-  height: number;
-  width: number;
-}
-
-interface SpotifyArtist {
-  id: string;
-  name: string;
-}
-
-interface SpotifyAlbum {
-  id: string;
-  name: string;
-  images: SpotifyImage[];
-}
-
-interface SpotifyTrack {
-  id: string;
-  name: string;
-  artists: SpotifyArtist[];
-  album: SpotifyAlbum;
-  external_urls: {
-    spotify: string;
-  };
-}
+import { getTrack } from "@/app/util/getTrack";
 
 interface SongProps {
   trackId: string;
 }
 
-export default function Song({ trackId }: SongProps) {
-  const [track, setTrack] = useState<SpotifyTrack | null>(null);
-  const [error, setError] = useState<string | null>(null);
+async function Song({ trackId }: SongProps) {
+  try {
+    const track = await getTrack(trackId);
 
-  useEffect(() => {
-    async function fetchTrack() {
-      try {
-        const response = await fetch(`/api/spotify/tracks/${trackId}`);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to fetch track");
-        }
-
-        const data: SpotifyTrack = await response.json();
-        setTrack(data);
-      } catch (error) {
-        console.error("Error:", error);
-        setError(error instanceof Error ? error.message : "An error occurred");
-      }
-    }
-
-    fetchTrack();
-  }, [trackId]);
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!track) {
     return (
-      <div>
-        <div>
-          <div className="flex flex-wrap items-start gap-x-8 gap-y-4">
-            {/* Image skeleton */}
-            <Skeleton className="flex-shrink-0 w-48 h-48 rounded-lg" />
-
-            <div className="space-y-4 w-3/4">
-              {/* Title skeleton */}
-              <Skeleton className="h-8 w-3/4" />
-
-              {/* Artist skeleton */}
-              <Skeleton className="h-6 w-1/2" />
-
-              {/* Album name skeleton */}
-              <Skeleton className="h-4 w-1/3" />
-
-              {/* Button skeleton */}
-              <Skeleton className="mt-4 h-10 w-32 rounded-full" />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div>
       <div>
         <div className="flex flex-wrap items-start gap-x-8 gap-y-4">
           <img
@@ -117,6 +33,17 @@ export default function Song({ trackId }: SongProps) {
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    return (
+      <div className="p-4">
+        <p className="text-red-500">
+          Error:{" "}
+          {error instanceof Error ? error.message : "Failed to load track"}
+        </p>
+      </div>
+    );
+  }
 }
+
+export default Song;

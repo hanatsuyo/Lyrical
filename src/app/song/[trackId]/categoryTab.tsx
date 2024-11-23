@@ -14,44 +14,37 @@ import TitleForm from "./form";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Loading from "@/app/components/Loading";
-import { categoryList } from "@/app/data/category";
+import { categoryList } from "@/data/category";
+import useSWR from "swr";
+
+// フェッチャー関数を定義
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CategoryTab({ trackId }: { trackId: string }) {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [threadList, setThreads] = useState<Thread[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isFormSubmitting, setIsFormSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchThreads = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `/api/database/thread/get/thread_list?category=${selectedCategory}&trackId=${trackId}`
-      );
-
-      if (!response.ok) {
-        throw new Error("スレッドの取得に失敗しました");
-      }
-
-      const data = await response.json();
-      setThreads(data);
-    } catch (error) {
-      console.error("Error fetching threads:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [selectedCategory, trackId]);
+  // useSWRを使用してデータフェッチ
+  const {
+    data: threadList = [],
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<Thread[]>(
+    `/api/database/thread/get/thread_list?category=${selectedCategory}&trackId=${trackId}`,
+    fetcher
+  );
 
   const handleCreateSuccess = useCallback(() => {
-    fetchThreads();
+    mutate(); // キャッシュを更新
     setIsFormSubmitting(false);
-  }, [fetchThreads]);
+  }, [mutate]);
 
   const [isVisible, setIsVisible] = useState(false);
   const threshold = 0.4;
+
   useEffect(() => {
-    // ダミーの要素を作成して監視
     const target = document.createElement("div");
     target.style.position = "absolute";
     target.style.top = `${threshold * 100}%`;
@@ -59,7 +52,6 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        // 要素が画面外に出たら表示
         setIsVisible(!entry.isIntersecting);
       },
       {
@@ -75,7 +67,6 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
     };
   }, [threshold]);
 
-  // アニメーション用のクラス
   const buttonClass = `fixed bottom-6 right-6 w-14 h-14 rounded-full bg-black grid justify-center items-center hover:scale-125 transition-all duration-300 ease-out
     ${
       isVisible
@@ -83,9 +74,7 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
         : "opacity-0 translate-y-10 pointer-events-none"
     }`;
 
-  useEffect(() => {
-    fetchThreads();
-  }, [fetchThreads]);
+  if (error) return <div>エラーが発生しました</div>;
 
   return (
     <div>
@@ -117,7 +106,7 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
             <DialogTrigger className={buttonClass}>
               <Plus className="w-8 h-8 text-white" />
             </DialogTrigger>
-            <DialogContent className="top-[30%]  sm:top-[50%] max-w-[500px] w-[90%] rounded-lg">
+            <DialogContent className="top-[30%] sm:top-[50%] max-w-[500px] w-[90%] rounded-lg">
               <DialogTitle>新規スレッド作成</DialogTitle>
               <TitleForm
                 trackId={trackId}
