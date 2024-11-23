@@ -8,7 +8,7 @@ export default async function DashBoard() {
   const existingUser = await checkRegistration(session.user.email);
   if (!existingUser) redirect("/registration");
   return (
-    <div className="grid gap-16 py-6 ">
+    <div className="grid gap-10 py-6 ">
       <div>
         <h2 className="font-bold text-3xl">日本トップ50</h2>
         <div className="mt-4">

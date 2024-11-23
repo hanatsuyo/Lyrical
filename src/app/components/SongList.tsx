@@ -19,7 +19,7 @@ interface Track {
 }
 
 const TrackCard = ({ track }: { track: Track }) => (
-  <div className="flex-[0_0_min(280px,100%)] max-w-full md:flex-[0_0_320px]">
+  <div className="max-w-full flex-[0_0_200px]">
     <Card className="group overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
       <Link href={`/song/${track.id}/`}>
         <div className="aspect-square relative overflow-hidden">
@@ -35,17 +35,14 @@ const TrackCard = ({ track }: { track: Track }) => (
             </div>
           )}
         </div>
-        <CardHeader className="space-y-1">
-          <CardTitle className="line-clamp-1 leading-normal">
+        <CardHeader className="px-2 py-2">
+          <CardTitle className="line-clamp-1 leading-normal text-lg">
             {track.name}
           </CardTitle>
-          <p className="text-muted-foreground line-clamp-1">{track.artist}</p>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground line-clamp-1">
-            {track.album}
+          <p className="text-muted-foreground text-sm  line-clamp-1">
+            {track.artist}
           </p>
-        </CardContent>
+        </CardHeader>
       </Link>
     </Card>
   </div>
@@ -54,7 +51,7 @@ const TrackCard = ({ track }: { track: Track }) => (
 const LoadingSkeleton = () => (
   <>
     {[...Array(6)].map((_, i) => (
-      <div key={i} className="flex-[0_0_100%] md:flex-[0_0_320px]">
+      <div key={i} className="flex-[0_0_100%] flex-[0_0_200px]">
         <Card className="overflow-hidden">
           <Skeleton className="aspect-square" />
           <CardHeader className="space-y-2">
@@ -137,10 +134,20 @@ export default function SongList({ api }: { api: string }) {
       </div>
 
       <div className="flex gap-2 mt-4">
-        <Button variant="outline" size="lg" onClick={scrollPrev} className="">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={scrollPrev}
+          className="h-10"
+        >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <Button variant="outline" size="lg" onClick={scrollNext} className="">
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={scrollNext}
+          className="h-10"
+        >
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
