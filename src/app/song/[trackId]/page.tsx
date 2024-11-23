@@ -9,7 +9,7 @@ interface PageProps {
 export default async function SongDetail({ params }: PageProps) {
   return (
     <>
-      <div className="p-8">
+      <div className="py-8">
         <Song trackId={params.trackId} />
         <div className="mt-4">
           <div className="mt-8">
