@@ -5,19 +5,8 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const category = searchParams.get("category");
-    const trackId = searchParams.get("trackId");
-
-    if (!category || !trackId) {
-      return NextResponse.json(
-        { error: "Category and trackId are required" },
-        { status: 400 }
-      );
-    }
-
     const supabase = getSupabase();
     const query = supabase
       .from("thread")

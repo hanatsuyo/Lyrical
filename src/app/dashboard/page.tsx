@@ -2,13 +2,20 @@ import SongList from "@/app/components/SongList";
 import { checkRegistration } from "@/app/util/client/checkRegistration";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
+import LatestThreads from "./LatestThreads";
 export default async function DashBoard() {
   const session = await getSession();
   if (!session) throw new Error("ログインしてください");
   const existingUser = await checkRegistration(session.user.email);
   if (!existingUser) redirect("/registration");
   return (
-    <div className="grid gap-10 py-6 ">
+    <div className="flex flex-col gap-10 py-6 ">
+      <div>
+        <h2 className="font-bold text-3xl">最新のスレッド</h2>
+        <div className="mt-4">
+          <LatestThreads />
+        </div>
+      </div>
       <div>
         <h2 className="font-bold text-3xl">日本トップ50</h2>
         <div className="mt-4">
