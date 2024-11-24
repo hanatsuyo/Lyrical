@@ -8,7 +8,7 @@ export class AuthenticationError extends Error {
   }
 }
 
-export async function getUserIdForSsc(): Promise<string> {
+export async function getUserId(): Promise<string> {
   try {
     const session = await getSession();
 

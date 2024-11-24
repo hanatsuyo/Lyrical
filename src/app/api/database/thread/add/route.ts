@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@auth0/nextjs-auth0";
-import { getSupabase } from "@/app/util/supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 import { categoryList } from "@/data/category";
 
 // バリデーション用の型定義

@@ -1,5 +1,5 @@
-import { getUserName } from "@/app/util/getUserName";
-import { getUserIdForSsc } from "@/app/util/getUserIdForSsc";
+import { getUserName } from "@/app/util/server/getUserName";
+import { getUserId } from "@/app/util/server/getUserId";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -17,7 +17,7 @@ const getInitials = (name: string) => {
 
 export default async function Information() {
   try {
-    const userId = await getUserIdForSsc();
+    const userId = await getUserId();
     const userInfo = await getUserName(userId);
 
     if (!userInfo) {

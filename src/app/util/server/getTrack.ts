@@ -1,5 +1,5 @@
 // utils/spotify.ts
-import { getAccessToken } from "@/app/util/getSpotifyAcessToken";
+import { getAccessToken } from "@/app/util/server/getSpotifyAcessToken";
 
 interface SpotifyTrack {
   id: string;

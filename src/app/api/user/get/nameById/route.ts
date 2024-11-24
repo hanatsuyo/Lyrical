@@ -1,6 +1,6 @@
 import { getSession } from "@auth0/nextjs-auth0";
 import { NextResponse } from "next/server";
-import { getSupabase } from "@/app/util/supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   try {

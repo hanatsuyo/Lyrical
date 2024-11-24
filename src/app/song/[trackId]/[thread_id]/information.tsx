@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import { getTrack } from "@/app/util/getTrack";
-import { getThreadInfo } from "@/app/util/getThreadInfo";
+import { getTrack } from "@/app/util/server/getTrack";
+import { getThreadInfo } from "@/app/util/server/getThreadInfo";
 import { categoryList } from "@/data/category";
 
 interface InformationProps {

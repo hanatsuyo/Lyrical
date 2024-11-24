@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { getUserId } from "@/app/util/getUserId";
+import { getUserId } from "@/app/util/client/getUserId";
 import { categoryList } from "@/data/category";
 import { DialogTitle } from "@radix-ui/react-dialog";
 

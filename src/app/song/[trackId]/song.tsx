@@ -1,4 +1,4 @@
-import { getTrack } from "@/app/util/getTrack";
+import { getTrack } from "@/app/util/server/getTrack";
 
 interface SongProps {
   trackId: string;

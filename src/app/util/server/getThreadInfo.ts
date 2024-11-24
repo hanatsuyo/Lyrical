@@ -1,5 +1,5 @@
 // utils/thread.ts
-import { getSupabase } from "@/app/util/supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 
 interface Thread {
   thread_id: string;

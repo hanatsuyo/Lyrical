@@ -1,4 +1,4 @@
-import { getSupabase } from "./supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 
 export const checkRegistration = async (email: string) => {
   const supabase = getSupabase();

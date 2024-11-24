@@ -1,5 +1,5 @@
 // app/api/threads/route.ts
-import { getSupabase } from "@/app/util/supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

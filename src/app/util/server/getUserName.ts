@@ -1,6 +1,6 @@
 // utils/user.ts
 import { getSession } from "@auth0/nextjs-auth0";
-import { getSupabase } from "@/app/util/supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 
 interface User {
   id: string;

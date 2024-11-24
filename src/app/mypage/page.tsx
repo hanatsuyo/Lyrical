@@ -1,5 +1,5 @@
 import Information from "./Information";
-import { checkRegistration } from "@/app/util/checkRegistration";
+import { checkRegistration } from "@/app/util/client/checkRegistration";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
 import Threads from "./threads";

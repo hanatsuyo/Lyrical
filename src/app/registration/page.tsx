@@ -1,7 +1,7 @@
 import RegistrationForm from "@/app/components/RegistrationForm";
 import { getSession } from "@auth0/nextjs-auth0";
 import { redirect } from "next/navigation";
-import { checkRegistration } from "@/app/util/checkRegistration";
+import { checkRegistration } from "@/app/util/client/checkRegistration";
 export default async function Registration() {
   const session = await getSession();
   if (!session) redirect("/api/auth/login?returnTo=/registration");

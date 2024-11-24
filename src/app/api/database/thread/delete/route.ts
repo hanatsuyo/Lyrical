@@ -1,5 +1,5 @@
 // app/api/database/thread/delete/route.ts
-import { getSupabase } from "@/app/util/supabase";
+import { getSupabase } from "@/app/util/server/supabase";
 import { getSession } from "@auth0/nextjs-auth0";
 import { NextResponse } from "next/server";
 

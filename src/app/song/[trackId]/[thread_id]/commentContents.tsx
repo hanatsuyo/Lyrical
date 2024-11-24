@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Loading from "@/app/components/Loading";
-import { getNameById } from "@/app/util/getName";
+import { getNameById } from "@/app/util/client/getName";
 import CommentDialog from "./commentDialog";
 import CommentForm from "./commentForm";
 import CommentItem from "./commentItem";

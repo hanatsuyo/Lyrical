@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { getUserId } from "@/app/util/getUserId";
+import { getUserId } from "@/app/util/client/getUserId";
 
 const formSchema = z.object({
   content: z.string().min(1, {

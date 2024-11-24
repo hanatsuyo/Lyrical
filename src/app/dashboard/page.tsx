@@ -1,5 +1,5 @@
 import SongList from "@/app/components/SongList";
-import { checkRegistration } from "@/app/util/checkRegistration";
+import { checkRegistration } from "@/app/util/client/checkRegistration";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
 export default async function DashBoard() {
