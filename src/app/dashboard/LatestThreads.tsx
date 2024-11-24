@@ -29,7 +29,7 @@ export default async function LatestThreads() {
         {threadsWithTracks.map((thread) => (
           <Card
             key={thread.thread_id}
-            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 max-w-sm mx-auto w-full group p-4"
+            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 max-w-sm mx-auto w-full p-4"
           >
             <Link href={`/song/${thread.track_id}/${thread.thread_id}`}>
               <div className="space-y-4">
@@ -51,7 +51,7 @@ export default async function LatestThreads() {
                         src={thread.trackData.album.images[0].url}
                         alt={thread.trackData.album.name}
                         fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="object-cover transition-transform duration-300"
                       />
                     </div>
                     <div className="min-w-0 flex-1">
