@@ -19,7 +19,6 @@ export default function RootLayout({
     <html lang="ja" className={`${notoSansJP.variable}`}>
       <UserProvider>
         <body className="font-noto-sans-jp min-h-screen">
-          <Header />
           <div className="overflow-x-hidden">
             <main className="pt-[64px] px-6 md:px-12">
               <ProgressBarProvider>{children}</ProgressBarProvider>

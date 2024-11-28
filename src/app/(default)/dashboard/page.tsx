@@ -1,4 +1,4 @@
-import SongList from "@/components/SongList";
+import SongList from "@/app/(default)/dashboard/_components/SongList";
 import { checkRegistration } from "@/app/util/client/checkRegistration";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";

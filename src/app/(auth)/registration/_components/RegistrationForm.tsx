@@ -34,13 +34,13 @@ export default function RegistrationForm() {
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
+  const [isClick, setClick] = useState<boolean>(false);
 
   const form = useForm<IFormInputs>();
 
   const onSubmit = async (data: IFormInputs) => {
-    console.log("Sending data:", data);
+    setClick(true);
     const body = JSON.stringify(data);
-    console.log("Stringified body:", body);
 
     try {
       const response = await fetch("/api/database/register", {
@@ -66,7 +66,7 @@ export default function RegistrationForm() {
       form.reset();
       setTimeout(() => {
         router.push("/dashboard/");
-      }, 500);
+      }, 100);
     } catch (error) {
       console.error("Error:", error);
       setSubmitStatus({
@@ -74,6 +74,7 @@ export default function RegistrationForm() {
         message:
           error instanceof Error ? error.message : "登録に失敗しました。",
       });
+      setClick(false);
     }
   };
 
@@ -159,7 +160,7 @@ export default function RegistrationForm() {
               )}
             />
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isClick}>
               登録
             </Button>
           </form>

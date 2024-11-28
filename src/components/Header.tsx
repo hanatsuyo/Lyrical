@@ -2,7 +2,12 @@ import { getSession } from "@auth0/nextjs-auth0";
 import { buttonVariants } from "@/components/ui/button";
 import Hamburger from "./Hamburger";
 import Link from "next/link";
-export default async function Header() {
+
+export default async function Header({
+  showMenu = true,
+}: {
+  showMenu?: boolean;
+}) {
   const session = await getSession();
 
   const NavItems = () => (
@@ -30,23 +35,24 @@ export default async function Header() {
       <div className="py-3 px-6 flex justify-between items-center">
         <h1 className="text-2xl">リリカル</h1>
 
-        {session ? (
+        {showMenu && (
           <>
-            {/* デスクトップメニュー */}
-            <div className="hidden md:flex items-center gap-3">
-              <NavItems />
-            </div>
-
-            {/* モバイルメニュー */}
-            <Hamburger />
+            {session ? (
+              <>
+                <div className="hidden md:flex items-center gap-3">
+                  <NavItems />
+                </div>
+                <Hamburger />
+              </>
+            ) : (
+              <a
+                href="/api/auth/login?returnTo=/registration/"
+                className={buttonVariants({ variant: "outline" })}
+              >
+                ログイン
+              </a>
+            )}
           </>
-        ) : (
-          <a
-            href="/api/auth/login?returnTo=/registration/"
-            className={buttonVariants({ variant: "outline" })}
-          >
-            Login
-          </a>
         )}
       </div>
     </header>

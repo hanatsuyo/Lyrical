@@ -25,11 +25,11 @@ export default async function LatestThreads() {
     );
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
         {threadsWithTracks.map((thread) => (
           <Card
             key={thread.thread_id}
-            className="overflow-hidden hover:shadow-lg transition-shadow duration-300 max-w-sm mx-auto w-full p-4"
+            className="overflow-hidden hover:shadow-lg transition-shadow duration-300  mx-auto w-full p-4"
           >
             <Link href={`/song/${thread.track_id}/${thread.thread_id}`}>
               <div className="space-y-4">
@@ -42,8 +42,6 @@ export default async function LatestThreads() {
                     {thread.title}
                   </h3>
                 </div>
-
-                {/* Music Info Section */}
                 {thread.trackData && (
                   <div className="flex gap-3 bg-muted/30 p-2 rounded-lg">
                     <div className="w-16 aspect-square relative overflow-hidden rounded-md shrink-0">
