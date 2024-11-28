@@ -1,4 +1,4 @@
-import RegistrationForm from "@/app/components/RegistrationForm";
+import RegistrationForm from "@/app/registration/_components/RegistrationForm";
 import { getSession } from "@auth0/nextjs-auth0";
 import { redirect } from "next/navigation";
 import { checkRegistration } from "@/app/util/client/checkRegistration";

@@ -1,5 +1,5 @@
-import Information from "./information";
-import CommentContents from "./commentContents";
+import Information from "./_components/Information";
+import CommentContents from "./_components/CommentContents";
 
 export default function ThreadContent({
   params,

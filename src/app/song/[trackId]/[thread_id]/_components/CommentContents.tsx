@@ -2,11 +2,11 @@
 
 import { useMemo } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import Loading from "@/app/components/Loading";
+import Loading from "@/components/Loading";
 import { getNameById } from "@/app/util/client/getName";
-import CommentDialog from "./commentDialog";
-import CommentForm from "./commentForm";
-import CommentItem from "./commentItem";
+import CommentDialog from "./CommentDialog";
+import CommentForm from "./CommentForm";
+import CommentItem from "./CommentItem";
 import useSWR, { mutate } from "swr";
 import { useState } from "react";
 

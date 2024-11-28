@@ -1,5 +1,5 @@
-import Song from "./song";
-import CategoryTab from "./categoryTab";
+import Song from "./_components/Song";
+import CategoryTab from "./_components/CategoryTab";
 
 interface PageProps {
   params: {

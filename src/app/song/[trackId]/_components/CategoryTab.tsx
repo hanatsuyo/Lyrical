@@ -2,7 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect, useCallback } from "react";
-import Threads from "./threads";
+import Threads from "./Threads";
 import type { Thread } from "@/app/types/thread";
 import {
   Dialog,
@@ -10,10 +10,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import TitleForm from "./form";
+import TitleForm from "./Form";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import Loading from "@/app/components/Loading";
+import Loading from "@/components/Loading";
 import { categoryList } from "@/data/category";
 import useSWR from "swr";
 

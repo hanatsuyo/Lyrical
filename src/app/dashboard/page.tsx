@@ -1,8 +1,8 @@
-import SongList from "@/app/components/SongList";
+import SongList from "@/components/SongList";
 import { checkRegistration } from "@/app/util/client/checkRegistration";
 import { redirect } from "next/navigation";
 import { getSession } from "@auth0/nextjs-auth0";
-import LatestThreads from "./LatestThreads";
+import LatestThreads from "./_components/LatestThreads";
 export default async function DashBoard() {
   const session = await getSession();
   if (!session) throw new Error("ログインしてください");
