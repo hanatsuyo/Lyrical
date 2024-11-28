@@ -17,13 +17,13 @@ export default async function DashBoard() {
         </div>
       </div>
       <div>
-        <h2 className="font-bold text-3xl">日本トップ50</h2>
+        <h2 className="font-bold text-3xl">日本で人気の曲</h2>
         <div className="mt-4">
           <SongList api="/api/spotify/top-japan" />
         </div>
       </div>
       <div>
-        <h2 className="font-bold text-3xl">世界トップ50</h2>
+        <h2 className="font-bold text-3xl">ビルボードランキング</h2>
         <div className="mt-4">
           <SongList api="/api/spotify/top-global" />
         </div>

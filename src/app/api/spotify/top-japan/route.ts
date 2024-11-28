@@ -50,7 +50,7 @@ export async function GET() {
     const token = await getAccessToken();
 
     // 日本のトップ50プレイリストのID
-    const JAPAN_TOP_50_PLAYLIST_ID = "37i9dQZEVXbKXQ4mDTEBXq";
+    const JAPAN_TOP_50_PLAYLIST_ID = "54WBnoUJ9oAFo5OCes3SVg";
 
     const response = await fetch(
       `https://api.spotify.com/v1/playlists/${JAPAN_TOP_50_PLAYLIST_ID}/tracks?limit=50`,

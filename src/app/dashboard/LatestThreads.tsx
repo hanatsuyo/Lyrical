@@ -1,5 +1,5 @@
 import { getLatestThreads } from "@/app/util/server/getLatestThreads";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { getTrack } from "@/app/util/server/getTrack";
 import Link from "next/link";
 import Image from "next/image";
