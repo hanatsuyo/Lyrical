@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
-import Header from "@/components/Header";
 import { notoSansJP } from "./fonts";
 import ProgressBarProvider from "@/components/ProgresssBarProvider";
 import "./globals.css";

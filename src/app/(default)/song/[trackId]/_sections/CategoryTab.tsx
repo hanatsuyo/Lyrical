@@ -32,7 +32,7 @@ export default function CategoryTab({ trackId }: { trackId: string }) {
     isLoading,
     mutate,
   } = useSWR<Thread[]>(
-    `/api/database/thread/get/thread_list?category=${selectedCategory}&trackId=${trackId}`,
+    `/api/database/thread?category=${selectedCategory}&trackId=${trackId}`,
     fetcher
   );
 

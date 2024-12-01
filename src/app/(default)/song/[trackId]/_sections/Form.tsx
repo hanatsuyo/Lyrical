@@ -105,7 +105,7 @@ export default function TitleForm({
     const data = { ...formData, trackId, user_id };
     const body = JSON.stringify(data);
     try {
-      const response = await fetch("/api/database/thread/add", {
+      const response = await fetch("/api/database/thread", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

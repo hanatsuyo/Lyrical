@@ -58,7 +58,7 @@ export default function Threads() {
   const handleDelete = async (thread: Thread) => {
     setIsDeleting(true);
     try {
-      const response = await fetch(`/api/database/thread/delete`, {
+      const response = await fetch(`/api/database/thread`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
