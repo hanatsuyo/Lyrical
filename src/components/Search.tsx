@@ -22,7 +22,7 @@ export default function SearchBox() {
   };
 
   return (
-    <div>
+    <div className="max-w-[180px]  md:max-w-[200px]">
       <form
         onSubmit={(e) => {
           e.preventDefault();
