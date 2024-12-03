@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { Viewport } from "next";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { notoSansJP } from "./fonts";
 import ProgressBarProvider from "@/components/ProgresssBarProvider";
@@ -7,9 +8,12 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Lyrical",
   description: "こちらはリリカルのサイトです。",
-  viewport: {
-    maximumScale: 1,
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
