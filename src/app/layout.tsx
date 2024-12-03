@@ -7,6 +7,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Lyrical",
   description: "こちらはリリカルのサイトです。",
+  viewport: {
+    maximumScale: 1,
+  },
 };
 
 export default function RootLayout({
