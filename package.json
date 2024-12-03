@@ -27,6 +27,7 @@
     "auth0": "^4.10.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cmdk": "^1.0.0",
     "crypto": "^1.0.1",
     "dayjs": "^1.11.13",
     "embla-carousel": "^8.3.1",
@@ -43,6 +44,7 @@
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
+    "use-debounce": "^10.0.4",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"
   },

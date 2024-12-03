@@ -1,5 +1,5 @@
 import { getSupabase } from "@/app/util/server/supabase";
-import type { Thread } from "@/app/types/thread";
+import type { Thread } from "@/types/thread";
 
 export async function getLatestThreads(): Promise<Thread[]> {
   try {

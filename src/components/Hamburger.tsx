@@ -10,7 +10,7 @@ export default function Hamburger() {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger className="md:hidden">
+      <SheetTrigger>
         <Menu className="w-6 h-6" />
       </SheetTrigger>
       <SheetContent side="right" className="w-64">

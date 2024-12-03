@@ -1,27 +1,6 @@
 // utils/spotify.ts
 import { getAccessToken } from "@/app/util/server/getSpotifyAcessToken";
-
-interface SpotifyTrack {
-  id: string;
-  name: string;
-  artists: Array<{
-    id: string;
-    name: string;
-  }>;
-  album: {
-    id: string;
-    name: string;
-    images: Array<{
-      url: string;
-      height: number;
-      width: number;
-    }>;
-  };
-  external_urls: {
-    spotify: string;
-  };
-}
-
+import { SpotifyTrack } from "@/types/track";
 export async function getTrack(trackId: string): Promise<SpotifyTrack> {
   if (!trackId) {
     throw new Error("Track ID is required");

@@ -19,7 +19,7 @@ export default function RootLayout({
       <UserProvider>
         <body className="font-noto-sans-jp min-h-screen">
           <div className="overflow-x-hidden">
-            <main className="pt-[64px] px-6 md:px-12">
+            <main className="pt-[64px] px-4 md:px-12">
               <ProgressBarProvider>{children}</ProgressBarProvider>
             </main>
           </div>

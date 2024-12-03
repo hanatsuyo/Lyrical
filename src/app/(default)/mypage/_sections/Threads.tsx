@@ -1,7 +1,7 @@
 "use client";
 
 import { getUserId } from "@/app/util/client/getUserId";
-import type { Thread } from "@/app/types/thread";
+import type { Thread } from "@/types/thread";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";

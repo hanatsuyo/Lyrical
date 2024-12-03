@@ -3,7 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState, useEffect, useCallback } from "react";
 import Threads from "./Threads";
-import type { Thread } from "@/app/types/thread";
+import type { Thread } from "@/types/thread";
 import {
   Dialog,
   DialogContent,

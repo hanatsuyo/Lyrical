@@ -1,4 +1,4 @@
-import type { Thread } from "@/app/types/thread";
+import type { Thread } from "@/types/thread";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
