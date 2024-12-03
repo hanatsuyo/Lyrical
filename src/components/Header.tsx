@@ -41,7 +41,7 @@ export default async function Header({
                   <NavItems />
                 </div>
                 <div className="flex gap-2 md:hidden">
-                  <div className="max-w-[180px]">
+                  <div>
                     <Search />
                   </div>
                   <Hamburger />

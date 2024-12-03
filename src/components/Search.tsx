@@ -32,7 +32,7 @@ export default function SearchBox() {
           <Search className="w-4 md:w-6  absolute -translate-y-1/2 top-1/2 left-2" />
           <input
             type="text"
-            className="border pl-[28px] md:pl-[40px] pr-1 py-[9px] text-sm rounded-full"
+            className="border pl-[28px] md:pl-[40px] pr-1 py-[9px] text-sm rounded-ful max-w-[180px]"
             placeholder="音楽を検索"
             value={query}
             onFocus={() => router.push("/search")}
