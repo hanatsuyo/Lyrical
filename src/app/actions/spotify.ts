@@ -1,3 +1,5 @@
+"use server";
+
 import { cookies } from "next/headers";
 
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
@@ -8,6 +10,19 @@ interface SpotifyTokenResponse {
   access_token: string;
   token_type: string;
   expires_in: number;
+}
+
+// トークンを設定するserver action
+async function setSpotifyToken(token: string) {
+  cookies().set({
+    name: COOKIE_NAME,
+    value: token,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 3540,
+    path: "/",
+  });
 }
 
 export async function getAccessToken(): Promise<string> {
@@ -38,17 +53,8 @@ export async function getAccessToken(): Promise<string> {
 
     const data: SpotifyTokenResponse = await response.json();
 
-    // Cookieに保存（有効期限は1時間）
-    cookies().set({
-      name: COOKIE_NAME,
-      value: data.access_token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      // トークンの有効期限より少し短く設定（3600秒 - 60秒 = 3540秒）
-      maxAge: 3540,
-      path: "/",
-    });
+    // server actionを使用してCookieを設定
+    await setSpotifyToken(data.access_token);
 
     return data.access_token;
   } catch (error) {

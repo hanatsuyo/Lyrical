@@ -1,5 +1,5 @@
 // utils/spotify.ts
-import { getAccessToken } from "@/app/util/server/getSpotifyAcessToken";
+import { getAccessToken } from "@/app/actions/spotify";
 import { SpotifyTrack } from "@/types/track";
 export async function getTrack(trackId: string): Promise<SpotifyTrack> {
   if (!trackId) {

@@ -1,4 +1,4 @@
-import { getAccessToken } from "@/app/util/server/getSpotifyAcessToken";
+import { getAccessToken } from "@/app/actions/spotify";
 import { NextResponse } from "next/server";
 
 // Spotifyのレスポンス用の型定義
