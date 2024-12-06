@@ -13,26 +13,20 @@ interface SpotifyTokenResponse {
 }
 
 // トークンを設定するserver action
-async function setSpotifyToken(token: string) {
-  cookies().set({
-    name: COOKIE_NAME,
-    value: token,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 3540,
-    path: "/",
-  });
-}
+// export async function setSpotifyToken() {
+//   const token = await getAccessToken();
+//   cookies().set({
+//     name: COOKIE_NAME,
+//     value: token,
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     sameSite: "lax",
+//     maxAge: 3540,
+//     path: "/",
+//   });
+// }
 
 export async function getAccessToken(): Promise<string> {
-  const cookieStore = cookies();
-  const cachedToken = cookieStore.get(COOKIE_NAME);
-
-  if (cachedToken) {
-    return cachedToken.value;
-  }
-
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
@@ -52,9 +46,6 @@ export async function getAccessToken(): Promise<string> {
     }
 
     const data: SpotifyTokenResponse = await response.json();
-
-    // server actionを使用してCookieを設定
-    await setSpotifyToken(data.access_token);
 
     return data.access_token;
   } catch (error) {

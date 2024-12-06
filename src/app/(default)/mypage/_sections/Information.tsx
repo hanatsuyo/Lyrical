@@ -3,15 +3,12 @@ import { getUserId } from "@/app/util/server/getUserId";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-// ユーザー名から初期文字を取得する関数
 const getInitials = (name: string) => {
   if (!name) return "";
-  // 文字列を空白で分割し、最初の2文字を取得
   const words = name.split(" ");
   if (words.length >= 2) {
     return (words[0][0] + words[1][0]).toUpperCase();
   }
-  // 単一の名前の場合は最初の2文字を取得
   return name.slice(0, 2).toUpperCase();
 };
 

@@ -1,7 +1,7 @@
 import { getSession } from "@auth0/nextjs-auth0";
 import { buttonVariants } from "@/components/ui/button";
+import UserSheet from "./UserMenu/User";
 import Search from "./Search";
-import Hamburger from "./Hamburger";
 import Link from "next/link";
 
 export default async function Header({
@@ -10,21 +10,6 @@ export default async function Header({
   showMenu?: boolean;
 }) {
   const session = await getSession();
-
-  const NavItems = () => (
-    <>
-      <Search />
-      <Link href="/mypage/" className={buttonVariants({ variant: "default" })}>
-        マイページ
-      </Link>
-      {/* <a
-        href="/api/auth/logout"
-        className={buttonVariants({ variant: "outline" })}
-      >
-        ログアウト
-      </a> */}
-    </>
-  );
 
   return (
     <header className="fixed top-0 left-0 w-full border-b border-slate-200 bg-white z-10">
@@ -37,14 +22,9 @@ export default async function Header({
           <>
             {session ? (
               <>
-                <div className="hidden md:flex items-center gap-3">
-                  <NavItems />
-                </div>
-                <div className="flex gap-2 md:hidden">
-                  <div>
-                    <Search />
-                  </div>
-                  <Hamburger />
+                <div className="flex gap-2">
+                  <Search />
+                  <UserSheet />
                 </div>
               </>
             ) : (
