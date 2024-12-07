@@ -12,9 +12,6 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get("user_id");
 
-    // リクエストパラメータのログ
-    console.log("Requested user_id:", userId);
-
     if (!userId) {
       return NextResponse.json(
         { error: "user_idが指定されていません" },
@@ -24,26 +21,11 @@ export async function GET(req: Request) {
 
     const supabase = getSupabase();
 
-    // 実行されるクエリの内容をログ
-    console.log("Executing query for user:", {
-      table: "user",
-      column: "id",
-      value: userId,
-    });
-
     const { data, error } = await supabase
       .from("user")
       .select("id, name") // idも含めて取得してデバッグ
       .eq("id", userId)
       .single();
-
-    // クエリ結果の詳細ログ
-    console.log("Query result:", {
-      success: !error,
-      hasData: !!data,
-      data,
-      error,
-    });
 
     if (error) {
       console.error("Supabase error:", error);

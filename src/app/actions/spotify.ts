@@ -12,21 +12,10 @@ interface SpotifyTokenResponse {
   expires_in: number;
 }
 
-// トークンを設定するserver action
-// export async function setSpotifyToken() {
-//   const token = await getAccessToken();
-//   cookies().set({
-//     name: COOKIE_NAME,
-//     value: token,
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//     sameSite: "lax",
-//     maxAge: 3540,
-//     path: "/",
-//   });
-// }
-
 export async function getAccessToken(): Promise<string> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME);
+  if (token) return token.value;
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
