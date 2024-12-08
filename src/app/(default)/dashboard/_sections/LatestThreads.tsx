@@ -31,7 +31,10 @@ export default async function LatestThreads() {
             key={thread.thread_id}
             className="overflow-hidden hover:shadow-lg transition-shadow duration-300  mx-auto w-full p-4"
           >
-            <Link href={`/song/${thread.track_id}/${thread.thread_id}`}>
+            <Link
+              href={`/song/${thread.track_id}/${thread.thread_id}`}
+              prefetch={true}
+            >
               <div className="space-y-4">
                 {/* Thread Title Section */}
                 <div className="flex items-center gap-3">

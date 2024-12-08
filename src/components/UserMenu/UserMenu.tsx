@@ -21,7 +21,11 @@ export default function UserMenu({ userInfo }: { userInfo: string }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40 top-16">
         <DropdownMenuItem asChild>
-          <Link href="/mypage/" className="flex items-center gap-1">
+          <Link
+            href="/mypage/"
+            className="flex items-center gap-1"
+            prefetch={true}
+          >
             <User size={16} />
             <span>マイページ</span>
           </Link>

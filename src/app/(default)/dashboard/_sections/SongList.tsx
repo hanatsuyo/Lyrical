@@ -20,7 +20,7 @@ interface Track {
 const TrackCard = ({ track }: { track: Track }) => (
   <div className="max-w-full flex-[0_0_200px]">
     <Card className="group overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-      <Link href={`/song/${track.id}/`}>
+      <Link href={`/song/${track.id}/`} prefetch={true}>
         <div className="aspect-square relative overflow-hidden">
           {track.image ? (
             <img
