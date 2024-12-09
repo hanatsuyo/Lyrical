@@ -22,11 +22,44 @@ export async function middleware(request: NextRequest) {
   // Spotifyトークンチェック
   if (session) {
     const token = request.cookies.get("spotify_access_token");
-    if (!token) {
-      const newToken = await getAccessToken();
-      const response = NextResponse.next();
-      response.cookies.set("spotify_access_token", newToken);
-      return response;
+    const tokenExpiry = request.cookies.get("spotify_token_expiry");
+
+    const isTokenExpired = () => {
+      if (!tokenExpiry) return true;
+      const expiryTime = parseInt(tokenExpiry.value);
+      return Date.now() >= expiryTime;
+    };
+
+    // トークンが存在しないか期限切れの場合
+    if (!token || isTokenExpired()) {
+      try {
+        const newToken = await getAccessToken();
+        const response = NextResponse.next();
+
+        // 新しいトークンと有効期限（1時間）を設定
+        const expiryTime = Date.now() + 3600 * 1000; // 1時間後のタイムスタンプ
+
+        response.cookies.set("spotify_access_token", newToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+        });
+
+        response.cookies.set("spotify_token_expiry", expiryTime.toString(), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+        });
+
+        return response;
+      } catch (error) {
+        console.error("Failed to refresh Spotify token:", error);
+        // トークン取得に失敗した場合は既存のCookieを削除
+        const response = NextResponse.next();
+        response.cookies.delete("spotify_access_token");
+        response.cookies.delete("spotify_token_expiry");
+        return response;
+      }
     }
   }
 
