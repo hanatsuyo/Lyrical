@@ -1,5 +1,5 @@
 // utils/spotify.ts
-import { getAccessToken } from "@/app/actions/spotify";
+import { getAccessTokenByCookie } from "@/app/actions/spotify";
 import { SpotifyTrack } from "@/types/track";
 export async function getTrack(trackId: string): Promise<SpotifyTrack> {
   if (!trackId) {
@@ -7,7 +7,7 @@ export async function getTrack(trackId: string): Promise<SpotifyTrack> {
   }
 
   try {
-    const accessToken = await getAccessToken();
+    const accessToken = await getAccessTokenByCookie();
     // console.log(accessToken);
     const response = await fetch(
       `https://api.spotify.com/v1/tracks/${trackId}`,

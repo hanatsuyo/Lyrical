@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { getAccessToken } from "@/app/actions/spotify";
+import { getAccessTokenByCookie } from "@/app/actions/spotify";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q");
-  const token = await getAccessToken();
+  const token = await getAccessTokenByCookie();
   if (!query) {
     return NextResponse.json(
       { error: "Query parameter is required" },

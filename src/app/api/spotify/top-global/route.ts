@@ -1,4 +1,4 @@
-import { getAccessToken } from "@/app/actions/spotify";
+import { getAccessTokenByCookie } from "@/app/actions/spotify";
 import { NextResponse } from "next/server";
 
 // Spotifyのレスポンス用の型定義
@@ -47,7 +47,7 @@ interface FormattedTrack {
 export const dynamic = "force-dynamic";
 export async function GET() {
   try {
-    const token = await getAccessToken();
+    const token = await getAccessTokenByCookie();
 
     // 日本のトップ50プレイリストのID
     const GlOBAL_TOP_50_PLAYLIST_ID = "6UeSakyzhiEt4NB3UAd6NQ";

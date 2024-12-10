@@ -6,16 +6,25 @@ const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
 const COOKIE_NAME = "spotify_access_token";
 
-interface SpotifyTokenResponse {
+type SpotifyTokenResponse = {
   access_token: string;
+  refresh_token: string;
   token_type: string;
   expires_in: number;
-}
+};
 
-export async function getAccessToken(): Promise<string> {
+type Token = {
+  access_token: string;
+  refresh_token: string;
+};
+
+export async function getAccessTokenByCookie(): Promise<string | undefined> {
   const cookieStore = await cookies();
   const token = cookieStore.get(COOKIE_NAME);
-  if (token) return token.value;
+  return token?.value;
+}
+
+export async function getAccessToken(): Promise<Token> {
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
@@ -36,9 +45,38 @@ export async function getAccessToken(): Promise<string> {
 
     const data: SpotifyTokenResponse = await response.json();
 
-    return data.access_token;
+    return {
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+    };
   } catch (error) {
     console.error("Error getting Spotify access token:", error);
     throw error;
   }
+}
+
+export async function refreshSpotifyToken(refreshToken: string) {
+  const spotifyTokenEndpoint = "https://accounts.spotify.com/api/token";
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+
+  const response = await fetch(spotifyTokenEndpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Basic ${Buffer.from(
+        `${clientId}:${clientSecret}`
+      ).toString("base64")}`,
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to refresh token");
+  }
+
+  return await response.json();
 }
