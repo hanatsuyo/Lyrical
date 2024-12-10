@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
     const isTokenExpired = () => {
       if (!tokenExpiry) return true;
       const expiryTime = parseInt(tokenExpiry.value);
+      console.log("expire");
       return Date.now() >= expiryTime;
     };
 
@@ -37,7 +38,7 @@ export async function middleware(request: NextRequest) {
         const response = NextResponse.next();
 
         // 新しいトークンと有効期限（1時間）を設定
-        const expiryTime = Date.now() + 3600 * 1000; // 1時間後のタイムスタンプ
+        const expiryTime = Date.now() + 3500 * 1000; //　期限切れ少し前のタイムスタンプ
 
         response.cookies.set("spotify_access_token", newToken, {
           httpOnly: true,
