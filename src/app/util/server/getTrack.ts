@@ -8,7 +8,6 @@ export async function getTrack(trackId: string): Promise<SpotifyTrack> {
 
   try {
     const accessToken = await getAccessTokenByCookie();
-    // console.log(accessToken);
     const response = await fetch(
       `https://api.spotify.com/v1/tracks/${trackId}`,
       {

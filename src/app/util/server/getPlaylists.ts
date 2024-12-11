@@ -1,5 +1,4 @@
 import { getAccessTokenByCookie } from "@/app/actions/spotify";
-import { NextResponse } from "next/server";
 
 // Spotifyのレスポンス用の型定義
 interface SpotifyArtist {
@@ -45,15 +44,12 @@ interface FormattedTrack {
   external_url: string;
 }
 export const dynamic = "force-dynamic";
-export async function GET() {
+export async function getPlaylists(playlist_id: string) {
   try {
     const token = await getAccessTokenByCookie();
 
-    // 日本のトップ50プレイリストのID
-    const GlOBAL_TOP_50_PLAYLIST_ID = "6UeSakyzhiEt4NB3UAd6NQ";
-
     const response = await fetch(
-      `https://api.spotify.com/v1/playlists/${GlOBAL_TOP_50_PLAYLIST_ID}/tracks?limit=50`,
+      `https://api.spotify.com/v1/playlists/${playlist_id}/tracks?limit=50`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -78,16 +74,9 @@ export async function GET() {
       preview_url: item.track.preview_url,
       external_url: item.track.external_urls.spotify,
     }));
-
-    return NextResponse.json(tracks);
+    return tracks;
   } catch (error) {
-    console.error("Error fetching tracks:", error);
-    if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json(
-      { error: "An unknown error occurred" },
-      { status: 500 }
-    );
+    console.error("Error fetching playlists data:", error);
+    throw error;
   }
 }
